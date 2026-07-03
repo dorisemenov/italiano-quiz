@@ -19,6 +19,7 @@
     .changelog-link:hover { color: var(--accent-dark); border-color: #95aaa0; }
     #counter, .muted { color: var(--muted); font-weight: 650; }
     #sentence { font: clamp(1.45rem, 3vw, 2.65rem)/1.12 Georgia, "Times New Roman", serif; margin: 0 0 16px; padding: 18px 0; border-block: 1px solid var(--line); }
+    #sentence .target-verb { text-decoration: underline; text-decoration-thickness: .14em; text-underline-offset: .12em; background: #fff5b8; padding: 0 .06em; border-radius: 4px; }
     .grid { display: grid; grid-template-columns: 210px minmax(720px, 1fr); gap: 18px; align-items: start; }
     fieldset { border: 0; padding: 0; margin: 0; }
 #tenses { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 12px 16px; align-items: start; }
@@ -66,7 +67,7 @@
 <main>
   <div class="version-stamp" id="versionStamp"></div>
   <section>
-    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="changelog-link" href="changelog.html" title="View changelog">Changelog</a><div id="counter">50 sentences left</div></div></div>
+    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="changelog-link" href="changelog.html" target="_blank" rel="noopener" title="View changelog">Changelog</a><div id="counter">50 sentences left</div></div></div>
     <p id="sentence"></p>
     <form id="quiz" autocomplete="off">
       <div class="grid">
@@ -98,7 +99,7 @@
   </aside>
 </main>
 <script>
-const APP_VERSION = "20260703_1038";
+const APP_VERSION = "20260703_1400";
 const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
 const tenses = [
   "presente",
@@ -156,6 +157,17 @@ const endings = {
     "condizionale presente": { io:"dormirei", tu:"dormiresti", "lui/lei":"dormirebbe", noi:"dormiremmo", voi:"dormireste", loro:"dormirebbero" },
     "condizionale passato": { io:"avrei dormito", tu:"avresti dormito", "lui/lei":"avrebbe dormito", noi:"avremmo dormito", voi:"avreste dormito", loro:"avrebbero dormito" }
   },
+  arrivare: {
+    "presente": { io:"arrivo", tu:"arrivi", "lui/lei":"arriva", noi:"arriviamo", voi:"arrivate", loro:"arrivano" },
+    "presente progressivo": { io:"sto arrivando", tu:"stai arrivando", "lui/lei":"sta arrivando", noi:"stiamo arrivando", voi:"state arrivando", loro:"stanno arrivando" },
+    "passato prossimo": { io:"sono arrivato", tu:"sei arrivato", "lui/lei":"\u00e8 arrivato", noi:"siamo arrivati", voi:"siete arrivati", loro:"sono arrivati" },
+    "imperfetto": { io:"arrivavo", tu:"arrivavi", "lui/lei":"arrivava", noi:"arrivavamo", voi:"arrivavate", loro:"arrivavano" },
+    "trapassato prossimo": { io:"ero arrivato", tu:"eri arrivato", "lui/lei":"era arrivato", noi:"eravamo arrivati", voi:"eravate arrivati", loro:"erano arrivati" },
+    "futuro semplice": { io:"arriver\u00f2", tu:"arriverai", "lui/lei":"arriver\u00e0", noi:"arriveremo", voi:"arriverete", loro:"arriveranno" },
+    "futuro anteriore": { io:"sar\u00f2 arrivato", tu:"sarai arrivato", "lui/lei":"sar\u00e0 arrivato", noi:"saremo arrivati", voi:"sarete arrivati", loro:"saranno arrivati" },
+    "condizionale presente": { io:"arriverei", tu:"arriveresti", "lui/lei":"arriverebbe", noi:"arriveremmo", voi:"arrivereste", loro:"arriverebbero" },
+    "condizionale passato": { io:"sarei arrivato", tu:"saresti arrivato", "lui/lei":"sarebbe arrivato", noi:"saremmo arrivati", voi:"sareste arrivati", loro:"sarebbero arrivati" }
+  },
   essere: {
     "presente": { io:"sono", tu:"sei", "lui/lei":"\u00e8", noi:"siamo", voi:"siete", loro:"sono" },
     "passato prossimo": { io:"sono stato", tu:"sei stato", "lui/lei":"\u00e8 stato", noi:"siamo stati", voi:"siete stati", loro:"sono stati" },
@@ -181,6 +193,13 @@ const verbContexts = {
     { it: "il progetto", en: "the project" },
     { it: "la lezione", en: "the lesson" },
     { it: "tutto prima di cena", en: "everything before dinner" }
+  ],
+  arrivare: [
+    { it: "alla stazione", en: "at the station" },
+    { it: "in ritardo", en: "late" },
+    { it: "prima di cena", en: "before dinner" },
+    { it: "con il treno", en: "by train" },
+    { it: "davanti al museo", en: "in front of the museum" }
   ],
   dormire: [
     { it: "bene", en: "well" },
@@ -213,6 +232,7 @@ const verbMeanings = {
   parlare: "to speak",
   finire: "to finish",
   dormire: "to sleep",
+  arrivare: "to arrive",
   essere: "to be"
 };
 const personMeanings = {
@@ -237,13 +257,13 @@ const essereTranslationTemplates = {
 const translationTemplates = {
   presente: { parlare:"speak", finire:"finish", dormire:"sleep", essere:"am/is/are" },
   "presente progressivo": { parlare:"am/is/are speaking", finire:"am/is/are finishing", dormire:"am/is/are sleeping", essere:"am/is/are being" },
-  "passato prossimo": { parlare:"spoke / have spoken", finire:"finished / have finished", dormire:"slept / have slept", essere:"was/were / have been" },
-  imperfetto: { parlare:"was/were speaking / used to speak", finire:"was/were finishing / used to finish", dormire:"was/were sleeping / used to sleep", essere:"was/were / used to be" },
-  "trapassato prossimo": { parlare:"had spoken", finire:"had finished", dormire:"had slept", essere:"had been" },
-  "futuro semplice": { parlare:"will speak", finire:"will finish", dormire:"will sleep", essere:"will be" },
-  "futuro anteriore": { parlare:"will have spoken", finire:"will have finished", dormire:"will have slept", essere:"will have been" },
-  "condizionale presente": { parlare:"would speak", finire:"would finish", dormire:"would sleep", essere:"would be" },
-  "condizionale passato": { parlare:"would have spoken", finire:"would have finished", dormire:"would have slept", essere:"would have been" }
+  "passato prossimo": { parlare:"spoke / have spoken", finire:"finished / have finished", dormire:"slept / have slept", arrivare:"arrived / have arrived", essere:"was/were / have been" },
+  imperfetto: { parlare:"was/were speaking / used to speak", finire:"was/were finishing / used to finish", dormire:"was/were sleeping / used to sleep", arrivare:"was/were arriving / used to arrive", essere:"was/were / used to be" },
+  "trapassato prossimo": { parlare:"had spoken", finire:"had finished", dormire:"had slept", arrivare:"had arrived", essere:"had been" },
+  "futuro semplice": { parlare:"will speak", finire:"will finish", dormire:"will sleep", arrivare:"will arrive", essere:"will be" },
+  "futuro anteriore": { parlare:"will have spoken", finire:"will have finished", dormire:"will have slept", arrivare:"will have arrived", essere:"will have been" },
+  "condizionale presente": { parlare:"would speak", finire:"would finish", dormire:"would sleep", arrivare:"would arrive", essere:"would be" },
+  "condizionale passato": { parlare:"would have spoken", finire:"would have finished", dormire:"would have slept", arrivare:"would have arrived", essere:"would have been" }
 };
 const curatedQuestions = [
   { sentence:"Parlo con il farmacista perch\u00e9 ho mal di testa.", person:"io", tense:"presente", verb:"parlare", form:"parlo", translation:"I speak with the pharmacist because I have a headache." },
@@ -283,7 +303,10 @@ const curatedQuestions = [
   { sentence:"Sei stato molto paziente con il nuovo studente.", person:"tu", tense:"passato prossimo", verb:"essere", form:"sei stato", translation:"You were very patient with the new student." },
   { sentence:"Era stanca dopo una giornata intera al lavoro.", person:"lui/lei", tense:"imperfetto", verb:"essere", form:"era", translation:"He/she was tired after a whole day at work." },
   { sentence:"Eravamo stati in ritardo per colpa del traffico.", person:"noi", tense:"trapassato prossimo", verb:"essere", form:"eravamo stati", translation:"We had been late because of the traffic." },
-  { sentence:"Sarete pronti quando arriver\u00e0 il taxi.", person:"voi", tense:"futuro semplice", verb:"essere", form:"sarete", translation:"You all will be ready when the taxi arrives." },
+  { sentence:"Sarete pronti quando arriver\u00e0 il taxi.", translation:"You all will be ready when the taxi arrives.", targets:[
+    { person:"voi", tense:"futuro semplice", verb:"essere", form:"sarete" },
+    { person:"lui/lei", tense:"futuro semplice", verb:"arrivare", form:"arriver\u00e0" }
+  ] },
   { sentence:"Saranno stati felici di ricevere la notizia.", person:"loro", tense:"futuro anteriore", verb:"essere", form:"saranno stati", translation:"They will have been happy to receive the news." },
   { sentence:"Sarei pi\u00f9 tranquillo con una spiegazione chiara.", person:"io", tense:"condizionale presente", verb:"essere", form:"sarei", translation:"I would be calmer with a clear explanation." },
   { sentence:"Saresti stato pi\u00f9 sicuro con un po' di pratica.", person:"tu", tense:"condizionale passato", verb:"essere", form:"saresti stato", translation:"You would have been more confident with a bit of practice." },
@@ -318,7 +341,24 @@ const conjugationPanel = document.getElementById("conjugationPanel");
 const explainButton = document.getElementById("explain");
 const retryWrong = document.getElementById("retryWrong");
 function choice(list) { return list[Math.floor(Math.random() * list.length)]; }
-function questionKey(question) { return question.sentence + "|" + question.person + "|" + question.tense; }
+function normalizeTargets(question) {
+  const targets = Array.isArray(question.targets) && question.targets.length ? question.targets : [{ person: question.person, tense: question.tense, verb: question.verb, form: question.form }];
+  return targets.map(target => ({
+    person: target.person,
+    tense: target.tense,
+    verb: target.verb || question.verb || "",
+    form: target.form || question.form || ""
+  })).filter(target => people.includes(target.person) && tenses.includes(target.tense));
+}
+function withTargets(question) { return { ...question, targets: normalizeTargets(question), targetIndex: 0 }; }
+function expandedQuestions() {
+  return (imported.length ? imported : curatedQuestions).flatMap(question => {
+    const base = withTargets(question);
+    return base.targets.map((target, index) => ({ ...base, targetIndex: index }));
+  });
+}
+function currentTarget() { return current?.targets?.[current.targetIndex || 0] || current || {}; }
+function questionKey(question) { const target = question.targets?.[question.targetIndex || 0] || question; return question.sentence + "|" + target.form + "|" + target.person + "|" + target.tense; }
 function shuffled(list) {
   const copy = list.slice();
   for (let index = copy.length - 1; index > 0; index -= 1) {
@@ -327,7 +367,7 @@ function shuffled(list) {
   }
   return copy;
 }
-function activeQuestions() { return imported.length ? imported : curatedQuestions; }
+function activeQuestions() { return expandedQuestions(); }
 function activeSourceKey() { return imported.length ? "imported:" + imported.length : "curated:" + curatedQuestions.length; }
 function refillQuestionQueue(sourceList = activeQuestions()) {
   questionQueue = shuffled(sourceList);
@@ -388,6 +428,20 @@ function sentenceCountLabel() {
 }
 function capitalize(text) { return text.charAt(0).toUpperCase() + text.slice(1); }
 function radios(list, name, target) { target.innerHTML = list.map(x => '<label><input type="radio" name="' + name + '" value="' + x + '"><span>' + x + '</span></label>').join(""); }
+function escapeHtml(text) {
+  return String(text || "").replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char]));
+}
+function renderSentence() {
+  const target = currentTarget();
+  const sentenceText = current.sentence || "";
+  const formText = target.form || "";
+  const index = formText ? sentenceText.toLowerCase().indexOf(formText.toLowerCase()) : -1;
+  if (index < 0) {
+    sentence.textContent = sentenceText;
+    return;
+  }
+  sentence.innerHTML = escapeHtml(sentenceText.slice(0, index)) + '<span class="target-verb">' + escapeHtml(sentenceText.slice(index, index + formText.length)) + '</span>' + escapeHtml(sentenceText.slice(index + formText.length));
+}
 function tenseRadios(target) {
   const columns = [
     [
@@ -410,7 +464,14 @@ function renderAnswerControls() {
 }
 function clearAnswerHighlights() { document.querySelectorAll("label.answer-correct, label.answer-wrong").forEach(label => label.classList.remove("answer-correct", "answer-wrong")); }
 function markChoice(name, value, className) { const input = Array.from(document.querySelectorAll('input[name="' + name + '"]')).find(option => option.value === value); if (input) input.closest("label")?.classList.add(className); }
-function markCheckedAnswers(person, tense) { clearAnswerHighlights(); markChoice("person", current.person, "answer-correct"); markChoice("tense", current.tense, "answer-correct"); if (person !== current.person) markChoice("person", person, "answer-wrong"); if (tense !== current.tense) markChoice("tense", tense, "answer-wrong"); }
+function markCheckedAnswers(person, tense) {
+  const target = currentTarget();
+  clearAnswerHighlights();
+  markChoice("person", target.person, "answer-correct");
+  markChoice("tense", target.tense, "answer-correct");
+  if (person !== target.person) markChoice("person", person, "answer-wrong");
+  if (tense !== target.tense) markChoice("tense", tense, "answer-wrong");
+}
 function hideFeedback() { feedback.hidden = true; feedback.className = ""; feedback.textContent = ""; }
 function show(kind, text) { feedback.hidden = false; feedback.className = 'show ' + kind; feedback.textContent = text; }
 function translationLine() { return current.translation ? " Translation: " + current.translation : ""; }
@@ -457,12 +518,13 @@ function englishVerbPhrase(pair) {
   const base = {
     parlare: "speak",
     finire: "finish",
-    dormire: "sleep"
+    dormire: "sleep",
+    arrivare: "arrive"
   }[pair.verb] || pair.verb;
-  const third = { parlare: "speaks", finire: "finishes", dormire: "sleeps" }[pair.verb] || base;
-  const gerund = { parlare: "speaking", finire: "finishing", dormire: "sleeping" }[pair.verb] || base;
-  const past = { parlare: "spoken", finire: "finished", dormire: "slept" }[pair.verb] || base;
-  const simplePast = { parlare: "spoke", finire: "finished", dormire: "slept" }[pair.verb] || base;
+  const third = { parlare: "speaks", finire: "finishes", dormire: "sleeps", arrivare: "arrives" }[pair.verb] || base;
+  const gerund = { parlare: "speaking", finire: "finishing", dormire: "sleeping", arrivare: "arriving" }[pair.verb] || base;
+  const past = { parlare: "spoken", finire: "finished", dormire: "slept", arrivare: "arrived" }[pair.verb] || base;
+  const simplePast = { parlare: "spoke", finire: "finished", dormire: "slept", arrivare: "arrived" }[pair.verb] || base;
   const bePresent = { io: "am", tu: "are", "lui/lei": "is", noi: "are", voi: "are", loro: "are" }[pair.person];
   const bePast = { io: "was", tu: "were", "lui/lei": "was", noi: "were", voi: "were", loro: "were" }[pair.person];
   switch (pair.tense) {
@@ -536,7 +598,7 @@ function normalizeTense(value) {
 function nextQuestion() {
   clearQuizUrl();
   current = takeNextQuestion();
-  sentence.textContent = current.sentence;
+  renderSentence();
   counter.textContent = sentenceCountLabel();
   renderAnswerControls();
   answered = false;
@@ -554,14 +616,15 @@ form.addEventListener("submit", event => {
   if (!answered) { attempts++; answered = true; }
   markCheckedAnswers(person, tense);
   showConjugation();
-  if (person === current.person && tense === current.tense) {
+  const target = currentTarget();
+  if (person === target.person && tense === target.tense) {
     if (!gotThisOne) { correct++; gotThisOne = true; }
     removeRetryQuestion(current);
     show("correct", "Correct." + translationLine());
   } else {
     addRetryQuestion(current);
     counter.textContent = sentenceCountLabel();
-    show("wrong", "Not quite. Correct answer: " + current.person + ", " + current.tense + "." + translationLine());
+    show("wrong", "Not quite. Correct answer for " + (target.form || "that verb") + ": " + target.person + ", " + target.tense + "." + translationLine());
     explainButton.hidden = false;
   }
   updateScore();
@@ -570,7 +633,7 @@ explainButton.onclick = () => show("wrong", explainCurrent());
 next.onclick = () => { resetAnswerState(); nextQuestion(); };
 retryWrong.addEventListener("change", () => { resetRetryQueue(); counter.textContent = sentenceCountLabel(); });
 copyPrompt.onclick = async () => {
-  const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. verb must be the infinitive, such as parlare, finire, dormire, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
+  const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. If a sentence has multiple useful finite verbs, also include targets as an array of objects with form, person, tense, and verb for each quiz-worthy verb. verb must be the infinitive, such as parlare, finire, dormire, arrivare, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
   await navigator.clipboard.writeText(prompt);
   show("correct", "Prompt copied. Paste it into ChatGPT, then paste the JSON result into the import box.");
 };
@@ -602,6 +665,7 @@ nextQuestion();
 </script>
 </body>
 </html>
+
 
 
 
