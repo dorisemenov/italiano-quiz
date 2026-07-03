@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Italian Verb Review</title>
+  <style>
+    :root { --ink:#17211d; --muted:#617167; --line:#cfd8d2; --page:#f5f7f3; --accent:#0d7f6f; --accent-dark:#095f54; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: linear-gradient(125deg, rgba(13,127,111,.12), transparent 38%), linear-gradient(310deg, rgba(181,56,45,.10), transparent 42%), var(--page); color: var(--ink); padding: 18px; }
+    main { width: min(1260px, 100%); margin: 0 auto; background: white; border: 1px solid var(--line); border-radius: 8px; padding: clamp(16px, 2.5vw, 26px); box-shadow: 0 18px 50px #0002; }
+    .top { display: flex; justify-content: space-between; gap: 16px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 16px; }
+    h1 { margin: 0; font-size: clamp(1.35rem, 3vw, 2rem); letter-spacing: 0; }
+    .back { color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: #fbfcfa; font-weight: 850; }
+    .back:hover { color: var(--accent-dark); border-color: #95aaa0; }
+    .review-grid { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin: 0; background: #fbfcfa; }
+    legend { color: var(--muted); font-size: .78rem; font-weight: 900; text-transform: uppercase; padding: 0 4px; }
+    label { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: center; min-height: 34px; padding: 7px 8px; margin-top: 6px; border: 1px solid #e4ebe6; border-radius: 8px; background: white; cursor: pointer; font-weight: 760; }
+    input[type="radio"] { width: 16px; height: 16px; accent-color: var(--accent); }
+    .explanation { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; background: #eef4f0; line-height: 1.4; }
+    .explanation strong { display: block; margin-bottom: 4px; }
+    .tables { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .verb-card { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fbfcfa; }
+    .verb-title { padding: 10px 12px; font-weight: 900; background: #eef4f0; border-bottom: 1px solid var(--line); }
+    .verb-title span { color: var(--muted); font-weight: 750; margin-left: 6px; }
+    .row { display: grid; grid-template-columns: 70px 1fr; gap: 10px; padding: 8px 12px; border-top: 1px solid #edf1ee; }
+    .row:first-child { border-top: 0; }
+    .person { color: var(--muted); font-weight: 850; }
+    .form { font-weight: 780; }
+    .note { color: var(--muted); font-size: .88rem; line-height: 1.35; margin: 12px 0 0; }
+    .version-stamp { text-align: center; color: #8b948e; font-size: .78rem; margin-top: 14px; }
+    @media (max-width: 1050px) { .review-grid, .tables { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 680px) { .review-grid, .tables { grid-template-columns: 1fr; } .top { display: block; } .back { display: inline-block; margin-top: 10px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="top">
+      <h1>Verb Review</h1>
+      <a class="back" href="index.html">Back to quiz</a>
+    </div>
+
+    <div class="review-grid" id="tenseOptions"></div>
+    <div class="explanation" id="explanation"></div>
+    <div class="tables" id="tables"></div>
+    <p class="note">The movement verb <strong>arrivare</strong> is included because compound tenses use <strong>essere</strong>, unlike the regular transitive examples that use <strong>avere</strong>.</p>
+    <div class="version-stamp">Version 20260703_1625</div>
+  </main>
+
+  <script>
+const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
+const tenseGroups = [
+  { title: "Present", items: ["presente", "presente progressivo"] },
+  { title: "Past", items: ["passato prossimo", "imperfetto", "trapassato prossimo"] },
+  { title: "Future", items: ["futuro semplice", "futuro anteriore"] },
+  { title: "Conditional", items: ["condizionale presente", "condizionale passato"] }
+];
+const tenses = tenseGroups.flatMap(group => group.items);
+const explanations = {
+  presente: "Used for what happens now, generally, or habitually. Regular verbs use endings like -o, -i, -a/-e, -iamo, -ate/-ete/-ite, and -ano/-ono.",
+  "presente progressivo": "Used for what is happening right now. It uses stare in the present plus the gerund: sto parlando, stai credendo, sta dormendo.",
+  "passato prossimo": "Used for completed past actions. Most regular transitive verbs use avere plus the past participle; movement verbs like arrivare use essere.",
+  imperfetto: "Used for ongoing, habitual, repeated, or background action in the past. Regular endings include -vo, -vi, -va, -vamo, -vate, -vano.",
+  "trapassato prossimo": "Used for what had already happened before another past action. It uses imperfetto of avere or essere plus the past participle.",
+  "futuro semplice": "Used for what will happen. Regular future endings include -r\u00f2, -rai, -r\u00e0, -remo, -rete, -ranno.",
+  "futuro anteriore": "Used for what will have happened before a future point. It uses future of avere or essere plus the past participle.",
+  "condizionale presente": "Used for what would happen, polite requests, or hypothetical actions. Regular endings include -rei, -resti, -rebbe, -remmo, -reste, -rebbero.",
+  "condizionale passato": "Used for what would have happened. It uses conditional of avere or essere plus the past participle."
+};
+const verbs = [
+  { infinitive: "parlare", family: "-are" },
+  { infinitive: "credere", family: "-ere" },
+  { infinitive: "dormire", family: "-ire" },
+  { infinitive: "arrivare", family: "movement + essere" }
+];
+const forms = {
+  parlare: {
+    "presente": { io:"parlo", tu:"parli", "lui/lei":"parla", noi:"parliamo", voi:"parlate", loro:"parlano" },
+    "presente progressivo": { io:"sto parlando", tu:"stai parlando", "lui/lei":"sta parlando", noi:"stiamo parlando", voi:"state parlando", loro:"stanno parlando" },
+    "passato prossimo": { io:"ho parlato", tu:"hai parlato", "lui/lei":"ha parlato", noi:"abbiamo parlato", voi:"avete parlato", loro:"hanno parlato" },
+    "imperfetto": { io:"parlavo", tu:"parlavi", "lui/lei":"parlava", noi:"parlavamo", voi:"parlavate", loro:"parlavano" },
+    "trapassato prossimo": { io:"avevo parlato", tu:"avevi parlato", "lui/lei":"aveva parlato", noi:"avevamo parlato", voi:"avevate parlato", loro:"avevano parlato" },
+    "futuro semplice": { io:"parler\u00f2", tu:"parlerai", "lui/lei":"parler\u00e0", noi:"parleremo", voi:"parlerete", loro:"parleranno" },
+    "futuro anteriore": { io:"avr\u00f2 parlato", tu:"avrai parlato", "lui/lei":"avr\u00e0 parlato", noi:"avremo parlato", voi:"avrete parlato", loro:"avranno parlato" },
+    "condizionale presente": { io:"parlerei", tu:"parleresti", "lui/lei":"parlerebbe", noi:"parleremmo", voi:"parlereste", loro:"parlerebbero" },
+    "condizionale passato": { io:"avrei parlato", tu:"avresti parlato", "lui/lei":"avrebbe parlato", noi:"avremmo parlato", voi:"avreste parlato", loro:"avrebbero parlato" }
+  },
+  credere: {
+    "presente": { io:"credo", tu:"credi", "lui/lei":"crede", noi:"crediamo", voi:"credete", loro:"credono" },
+    "presente progressivo": { io:"sto credendo", tu:"stai credendo", "lui/lei":"sta credendo", noi:"stiamo credendo", voi:"state credendo", loro:"stanno credendo" },
+    "passato prossimo": { io:"ho creduto", tu:"hai creduto", "lui/lei":"ha creduto", noi:"abbiamo creduto", voi:"avete creduto", loro:"hanno creduto" },
+    "imperfetto": { io:"credevo", tu:"credevi", "lui/lei":"credeva", noi:"credevamo", voi:"credevate", loro:"credevano" },
+    "trapassato prossimo": { io:"avevo creduto", tu:"avevi creduto", "lui/lei":"aveva creduto", noi:"avevamo creduto", voi:"avevate creduto", loro:"avevano creduto" },
+    "futuro semplice": { io:"creder\u00f2", tu:"crederai", "lui/lei":"creder\u00e0", noi:"crederemo", voi:"crederete", loro:"crederanno" },
+    "futuro anteriore": { io:"avr\u00f2 creduto", tu:"avrai creduto", "lui/lei":"avr\u00e0 creduto", noi:"avremo creduto", voi:"avrete creduto", loro:"avranno creduto" },
+    "condizionale presente": { io:"crederei", tu:"crederesti", "lui/lei":"crederebbe", noi:"crederemmo", voi:"credereste", loro:"crederebbero" },
+    "condizionale passato": { io:"avrei creduto", tu:"avresti creduto", "lui/lei":"avrebbe creduto", noi:"avremmo creduto", voi:"avreste creduto", loro:"avrebbero creduto" }
+  },
+  dormire: {
+    "presente": { io:"dormo", tu:"dormi", "lui/lei":"dorme", noi:"dormiamo", voi:"dormite", loro:"dormono" },
+    "presente progressivo": { io:"sto dormendo", tu:"stai dormendo", "lui/lei":"sta dormendo", noi:"stiamo dormendo", voi:"state dormendo", loro:"stanno dormendo" },
+    "passato prossimo": { io:"ho dormito", tu:"hai dormito", "lui/lei":"ha dormito", noi:"abbiamo dormito", voi:"avete dormito", loro:"hanno dormito" },
+    "imperfetto": { io:"dormivo", tu:"dormivi", "lui/lei":"dormiva", noi:"dormivamo", voi:"dormivate", loro:"dormivano" },
+    "trapassato prossimo": { io:"avevo dormito", tu:"avevi dormito", "lui/lei":"aveva dormito", noi:"avevamo dormito", voi:"avevate dormito", loro:"avevano dormito" },
+    "futuro semplice": { io:"dormir\u00f2", tu:"dormirai", "lui/lei":"dormir\u00e0", noi:"dormiremo", voi:"dormirete", loro:"dormiranno" },
+    "futuro anteriore": { io:"avr\u00f2 dormito", tu:"avrai dormito", "lui/lei":"avr\u00e0 dormito", noi:"avremo dormito", voi:"avrete dormito", loro:"avranno dormito" },
+    "condizionale presente": { io:"dormirei", tu:"dormiresti", "lui/lei":"dormirebbe", noi:"dormiremmo", voi:"dormireste", loro:"dormirebbero" },
+    "condizionale passato": { io:"avrei dormito", tu:"avresti dormito", "lui/lei":"avrebbe dormito", noi:"avremmo dormito", voi:"avreste dormito", loro:"avrebbero dormito" }
+  },
+  arrivare: {
+    "presente": { io:"arrivo", tu:"arrivi", "lui/lei":"arriva", noi:"arriviamo", voi:"arrivate", loro:"arrivano" },
+    "presente progressivo": { io:"sto arrivando", tu:"stai arrivando", "lui/lei":"sta arrivando", noi:"stiamo arrivando", voi:"state arrivando", loro:"stanno arrivando" },
+    "passato prossimo": { io:"sono arrivato/a", tu:"sei arrivato/a", "lui/lei":"\u00e8 arrivato/a", noi:"siamo arrivati/e", voi:"siete arrivati/e", loro:"sono arrivati/e" },
+    "imperfetto": { io:"arrivavo", tu:"arrivavi", "lui/lei":"arrivava", noi:"arrivavamo", voi:"arrivavate", loro:"arrivavano" },
+    "trapassato prossimo": { io:"ero arrivato/a", tu:"eri arrivato/a", "lui/lei":"era arrivato/a", noi:"eravamo arrivati/e", voi:"eravate arrivati/e", loro:"erano arrivati/e" },
+    "futuro semplice": { io:"arriver\u00f2", tu:"arriverai", "lui/lei":"arriver\u00e0", noi:"arriveremo", voi:"arriverete", loro:"arriveranno" },
+    "futuro anteriore": { io:"sar\u00f2 arrivato/a", tu:"sarai arrivato/a", "lui/lei":"sar\u00e0 arrivato/a", noi:"saremo arrivati/e", voi:"sarete arrivati/e", loro:"saranno arrivati/e" },
+    "condizionale presente": { io:"arriverei", tu:"arriveresti", "lui/lei":"arriverebbe", noi:"arriveremmo", voi:"arrivereste", loro:"arriverebbero" },
+    "condizionale passato": { io:"sarei arrivato/a", tu:"saresti arrivato/a", "lui/lei":"sarebbe arrivato/a", noi:"saremmo arrivati/e", voi:"sareste arrivati/e", loro:"sarebbero arrivati/e" }
+  }
+};
+function renderOptions() {
+  tenseOptions.innerHTML = tenseGroups.map(group => '<fieldset><legend>' + group.title + '</legend>' + group.items.map(tense => '<label><input type="radio" name="tense" value="' + tense + '"' + (tense === tenses[0] ? " checked" : "") + '><span>' + tense + '</span></label>').join("") + '</fieldset>').join("");
+}
+function renderTables(tense) {
+  explanation.innerHTML = '<strong>' + tense + '</strong>' + explanations[tense];
+  tables.innerHTML = verbs.map(verb => {
+    const rows = people.map(person => '<div class="row"><span class="person">' + person + '</span><span class="form">' + forms[verb.infinitive][tense][person] + '</span></div>').join("");
+    return '<section class="verb-card"><div class="verb-title">' + verb.infinitive + '<span>' + verb.family + '</span></div>' + rows + '</section>';
+  }).join("");
+}
+renderOptions();
+renderTables(tenses[0]);
+tenseOptions.addEventListener("change", event => renderTables(event.target.value));
+  </script>
+</body>
+</html>

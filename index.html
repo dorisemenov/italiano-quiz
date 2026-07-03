@@ -15,11 +15,14 @@
     h1 { margin: 0; font-size: clamp(1.25rem, 2.2vw, 1.75rem); letter-spacing: 0; }
     .top { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 14px; }
     .top-actions { display: grid; gap: 6px; justify-items: end; }
-    .changelog-link { color: var(--muted); text-decoration: none; font-weight: 850; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: #fbfcfa; font-size: .85rem; }
-    .changelog-link:hover { color: var(--accent-dark); border-color: #95aaa0; }
+    .review-link { color: white; text-decoration: none; font-weight: 900; border: 1px solid var(--accent-dark); border-radius: 8px; padding: 8px 13px; background: var(--accent); font-size: .98rem; box-shadow: 0 8px 18px rgba(13,127,111,.22); }
+    .review-link:hover { background: var(--accent-dark); }
     #counter, .muted { color: var(--muted); font-weight: 650; }
     #sentence { font: clamp(1.45rem, 3vw, 2.65rem)/1.12 Georgia, "Times New Roman", serif; margin: 0 0 16px; padding: 18px 0; border-block: 1px solid var(--line); }
     #sentence .target-verb { text-decoration: underline; text-decoration-thickness: .14em; text-underline-offset: .12em; background: #fff5b8; padding: 0 .06em; border-radius: 4px; }
+    .hint { margin: -6px 0 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+    .hint summary { cursor: pointer; color: var(--accent-dark); font-weight: 850; width: max-content; }
+    .hint p { margin: 8px 0 0; color: var(--muted); line-height: 1.35; }
     .grid { display: grid; grid-template-columns: 210px minmax(720px, 1fr); gap: 18px; align-items: start; }
     fieldset { border: 0; padding: 0; margin: 0; }
 #tenses { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 12px 16px; align-items: start; }
@@ -41,8 +44,9 @@
     .conjugation-panel { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; overflow: hidden; }
     .conjugation-title { padding: 9px 11px; font-weight: 850; border-bottom: 1px solid var(--line); background: #f1f5f2; }
     .conjugation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .conjugation-column + .conjugation-column { border-left: 1px solid #edf1ee; }
     .conjugation-row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; padding: 8px 11px; border-top: 1px solid #edf1ee; }
-    .conjugation-row:nth-child(1), .conjugation-row:nth-child(2) { border-top: 0; }
+    .conjugation-row:first-child { border-top: 0; }
     .conjugation-person { color: var(--muted); font-weight: 850; }
     .conjugation-form { font-weight: 760; }
     #feedback.correct { color: var(--good); background: var(--soft-good); border: 1px solid #acd7bb; }
@@ -57,18 +61,21 @@
     .import-tools summary { cursor: pointer; font-weight: 850; }
     .import-tools:not([open]) { padding-bottom: 9px; }
     .small { font-size: .9rem; color: var(--muted); line-height: 1.35; }
+    .version-stamp { color: #8b948e; font-size: .78rem; text-align: center; }
     @media (max-width: 1250px) { main { grid-template-columns: 1fr; } aside { grid-template-columns: 240px 1fr; align-items: start; } }
     @media (max-width: 1100px) { .grid { grid-template-columns: 190px minmax(0, 1fr); } #tenses { grid-template-columns: repeat(2, minmax(230px, 1fr)); } }
-    @media (max-width: 820px) { main, .grid, #tenses { grid-template-columns: 1fr; } .top { display: block; } }
-      .version-stamp { grid-column: 1 / -1; text-align: center; color: #8b948e; font-size: .78rem; margin-top: 2px; }
+    @media (max-width: 820px) { main, .grid, #tenses, .conjugation-grid { grid-template-columns: 1fr; } .top { display: block; } .conjugation-column + .conjugation-column { border-left: 0; border-top: 1px solid #edf1ee; } }
   </style>
 </head>
 <body>
 <main>
-  <div class="version-stamp" id="versionStamp"></div>
   <section>
-    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="changelog-link" href="changelog.html" target="_blank" rel="noopener" title="View changelog">Changelog</a><div id="counter">50 sentences left</div></div></div>
+    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="review-link" href="review.html" target="_blank" rel="noopener" title="Review verb endings">Review verbs</a><div id="counter">50 sentences left</div></div></div>
     <p id="sentence"></p>
+    <details class="hint" id="hint">
+      <summary>hint</summary>
+      <p id="hintTranslation"></p>
+    </details>
     <form id="quiz" autocomplete="off">
       <div class="grid">
         <fieldset><legend>Person</legend><div id="people"></div></fieldset>
@@ -96,10 +103,11 @@
         <button type="button" id="importSentences">Import pasted sentences</button>
       </div>
     </details>
+    <div class="version-stamp" id="versionStamp"></div>
   </aside>
 </main>
 <script>
-const APP_VERSION = "20260703_1400";
+const APP_VERSION = "20260703_1635";
 const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
 const tenses = [
   "presente",
@@ -160,13 +168,13 @@ const endings = {
   arrivare: {
     "presente": { io:"arrivo", tu:"arrivi", "lui/lei":"arriva", noi:"arriviamo", voi:"arrivate", loro:"arrivano" },
     "presente progressivo": { io:"sto arrivando", tu:"stai arrivando", "lui/lei":"sta arrivando", noi:"stiamo arrivando", voi:"state arrivando", loro:"stanno arrivando" },
-    "passato prossimo": { io:"sono arrivato", tu:"sei arrivato", "lui/lei":"\u00e8 arrivato", noi:"siamo arrivati", voi:"siete arrivati", loro:"sono arrivati" },
+    "passato prossimo": { io:"sono arrivato/a", tu:"sei arrivato/a", "lui/lei":"\u00e8 arrivato/a", noi:"siamo arrivati/e", voi:"siete arrivati/e", loro:"sono arrivati/e" },
     "imperfetto": { io:"arrivavo", tu:"arrivavi", "lui/lei":"arrivava", noi:"arrivavamo", voi:"arrivavate", loro:"arrivavano" },
-    "trapassato prossimo": { io:"ero arrivato", tu:"eri arrivato", "lui/lei":"era arrivato", noi:"eravamo arrivati", voi:"eravate arrivati", loro:"erano arrivati" },
+    "trapassato prossimo": { io:"ero arrivato/a", tu:"eri arrivato/a", "lui/lei":"era arrivato/a", noi:"eravamo arrivati/e", voi:"eravate arrivati/e", loro:"erano arrivati/e" },
     "futuro semplice": { io:"arriver\u00f2", tu:"arriverai", "lui/lei":"arriver\u00e0", noi:"arriveremo", voi:"arriverete", loro:"arriveranno" },
-    "futuro anteriore": { io:"sar\u00f2 arrivato", tu:"sarai arrivato", "lui/lei":"sar\u00e0 arrivato", noi:"saremo arrivati", voi:"sarete arrivati", loro:"saranno arrivati" },
+    "futuro anteriore": { io:"sar\u00f2 arrivato/a", tu:"sarai arrivato/a", "lui/lei":"sar\u00e0 arrivato/a", noi:"saremo arrivati/e", voi:"sarete arrivati/e", loro:"saranno arrivati/e" },
     "condizionale presente": { io:"arriverei", tu:"arriveresti", "lui/lei":"arriverebbe", noi:"arriveremmo", voi:"arrivereste", loro:"arriverebbero" },
-    "condizionale passato": { io:"sarei arrivato", tu:"saresti arrivato", "lui/lei":"sarebbe arrivato", noi:"saremmo arrivati", voi:"sareste arrivati", loro:"sarebbero arrivati" }
+    "condizionale passato": { io:"sarei arrivato/a", tu:"saresti arrivato/a", "lui/lei":"sarebbe arrivato/a", noi:"saremmo arrivati/e", voi:"sareste arrivati/e", loro:"sarebbero arrivati/e" }
   },
   essere: {
     "presente": { io:"sono", tu:"sei", "lui/lei":"\u00e8", noi:"siamo", voi:"siete", loro:"sono" },
@@ -435,6 +443,8 @@ function renderSentence() {
   const target = currentTarget();
   const sentenceText = current.sentence || "";
   const formText = target.form || "";
+  hint.open = false;
+  hintTranslation.textContent = current.translation || "No translation available for this sentence.";
   const index = formText ? sentenceText.toLowerCase().indexOf(formText.toLowerCase()) : -1;
   if (index < 0) {
     sentence.textContent = sentenceText;
@@ -479,16 +489,21 @@ function hideConjugation() { conjugationPanel.hidden = true; conjugationPanel.in
 function resetAnswerState() {
   clearSelections();
   clearAnswerHighlights();
+  hint.open = false;
   hideConjugation();
   hideFeedback();
   explainButton.hidden = true;
   document.querySelectorAll("label.answer-correct, label.answer-wrong").forEach(label => label.classList.remove("answer-correct", "answer-wrong"));
 }
 function showConjugation() {
-  if (!current.verb || !endings[current.verb]?.[current.tense]) { hideConjugation(); return; }
-  const forms = endings[current.verb][current.tense];
+  const target = currentTarget();
+  if (!target.verb || !endings[target.verb]?.[target.tense]) { hideConjugation(); return; }
+  const forms = endings[target.verb][target.tense];
+  const singularPeople = ["io", "tu", "lui/lei"];
+  const pluralPeople = ["noi", "voi", "loro"];
+  const renderColumn = columnPeople => '<div class="conjugation-column">' + columnPeople.map(person => '<div class="conjugation-row"><span class="conjugation-person">' + person + '</span><span class="conjugation-form">' + forms[person] + '</span></div>').join("") + '</div>';
   conjugationPanel.hidden = false;
-  conjugationPanel.innerHTML = '<div class="conjugation-title">' + current.verb + ' - ' + current.tense + '</div><div class="conjugation-grid">' + people.map(person => '<div class="conjugation-row"><span class="conjugation-person">' + person + '</span><span class="conjugation-form">' + forms[person] + '</span></div>').join("") + '</div>';
+  conjugationPanel.innerHTML = '<div class="conjugation-title">' + target.verb + ' - ' + target.tense + '</div><div class="conjugation-grid">' + renderColumn(singularPeople) + renderColumn(pluralPeople) + '</div>';
 }
 function explainCurrent() {
   const formText = current.form || current.sentence.split(/\s+/).slice(0, 2).join(" ") || "the verb";
