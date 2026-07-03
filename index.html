@@ -33,6 +33,7 @@
     #feedback { display: none; font-weight: 800; margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; }
     #feedback[hidden] { display: none; }
     #feedback.show { display: block; }
+    #feedback[hidden], #feedback.show[hidden] { display: none !important; }
     .conjugation-panel { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; overflow: hidden; }
     .conjugation-title { padding: 9px 11px; font-weight: 850; border-bottom: 1px solid var(--line); background: #f1f5f2; }
     .conjugation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -93,7 +94,7 @@
   </aside>
 </main>
 <script>
-const APP_VERSION = "20260702_2122";
+const APP_VERSION = "20260702_2131";
 const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
 const tenses = [
   "presente",
@@ -290,6 +291,14 @@ function hideFeedback() { feedback.hidden = true; feedback.className = ""; feedb
 function show(kind, text) { feedback.hidden = false; feedback.className = 'show ' + kind; feedback.textContent = text; }
 function translationLine() { return current.translation ? " Translation: " + current.translation : ""; }
 function hideConjugation() { conjugationPanel.hidden = true; conjugationPanel.innerHTML = ""; }
+function resetAnswerState() {
+  clearSelections();
+  clearAnswerHighlights();
+  hideConjugation();
+  hideFeedback();
+  explainButton.hidden = true;
+  document.querySelectorAll("label.answer-correct, label.answer-wrong").forEach(label => label.classList.remove("answer-correct", "answer-wrong"));
+}
 function showConjugation() {
   if (!current.verb || !endings[current.verb]?.[current.tense]) { hideConjugation(); return; }
   const forms = endings[current.verb][current.tense];
@@ -409,11 +418,7 @@ function nextQuestion() {
   answered = false;
   gotThisOne = false;
   form.reset();
-  clearSelections();
-  clearAnswerHighlights();
-  hideConjugation();
-  hideFeedback();
-  explainButton.hidden = true;
+  resetAnswerState();
 }
 renderAnswerControls();
 form.addEventListener("submit", event => {
@@ -435,7 +440,7 @@ form.addEventListener("submit", event => {
   updateScore();
 });
 explainButton.onclick = () => show("wrong", explainCurrent());
-next.onclick = nextQuestion;
+next.onclick = () => { resetAnswerState(); nextQuestion(); };
 reset.onclick = () => { attempts = 0; correct = 0; updateScore(); nextQuestion(); };
 copyPrompt.onclick = async () => {
   const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. verb must be the infinitive, such as parlare, finire, dormire, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
@@ -468,6 +473,8 @@ nextQuestion();
 </script>
 </body>
 </html>
+
+
 
 
 
