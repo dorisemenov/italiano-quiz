@@ -1,0 +1,472 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Italian Verb Drill</title>
+  <style>
+    :root { --ink:#17211d; --muted:#617167; --line:#cfd8d2; --page:#f5f7f3; --accent:#0d7f6f; --accent-dark:#095f54; --good:#12733c; --bad:#b1332c; --soft-good:#e7f5ec; --soft-bad:#fae9e7; }
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; background: linear-gradient(125deg, rgba(13,127,111,.12), transparent 38%), linear-gradient(310deg, rgba(181,56,45,.10), transparent 42%), var(--page); color: var(--ink); padding: 12px; }
+    main { width: min(1500px, 100%); display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 12px; }
+    section, aside { background: white; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 18px 50px #0002; }
+    section { padding: clamp(14px, 2vw, 22px); }
+    aside { padding: 14px; align-self: start; display: grid; gap: 10px; }
+    h1 { margin: 0; font-size: clamp(1.25rem, 2.2vw, 1.75rem); letter-spacing: 0; }
+    .top { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 14px; }
+    #counter, .muted { color: var(--muted); font-weight: 650; }
+    #sentence { font: clamp(1.45rem, 3vw, 2.65rem)/1.12 Georgia, "Times New Roman", serif; margin: 0 0 16px; padding: 18px 0; border-block: 1px solid var(--line); }
+    .grid { display: grid; grid-template-columns: 210px minmax(720px, 1fr); gap: 18px; align-items: start; }
+    fieldset { border: 0; padding: 0; margin: 0; }
+#tenses { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 12px 16px; align-items: start; }
+.tense-stack { display: grid; gap: 12px; min-width: 0; }
+.tense-group { min-width: 0; }
+.tense-group-title { color: var(--muted); font-size: .78rem; font-weight: 850; text-transform: uppercase; margin: 0 0 5px; }
+    legend { font-weight: 850; margin-bottom: 6px; }
+    label { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: center; min-height: 34px; padding: 6px 9px; margin: 5px 0; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; cursor: pointer; font-weight: 700; font-size: .94rem; }
+    label.answer-correct { background: #e7f5ec; border-color: #8fcfa6; color: #115f34; }
+    label.answer-wrong { background: #fae9e7; border-color: #e2aaa4; color: #9d2f28; }
+    input[type="radio"] { width: 16px; height: 16px; accent-color: var(--accent); }
+    button { margin-top: 12px; margin-right: 7px; padding: 9px 13px; border: 0; border-radius: 8px; font: inherit; font-weight: 850; cursor: pointer; background: #e8eee9; color: var(--ink); }
+    button.primary { background: var(--accent); color: white; }
+    button.primary:hover { background: var(--accent-dark); }
+    #feedback { display: none; font-weight: 800; margin: 12px 0 0; padding: 10px 12px; border-radius: 8px; }
+    #feedback.show { display: block; }
+    .conjugation-panel { margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; overflow: hidden; }
+    .conjugation-title { padding: 9px 11px; font-weight: 850; border-bottom: 1px solid var(--line); background: #f1f5f2; }
+    .conjugation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .conjugation-row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; padding: 8px 11px; border-top: 1px solid #edf1ee; }
+    .conjugation-row:nth-child(1), .conjugation-row:nth-child(2) { border-top: 0; }
+    .conjugation-person { color: var(--muted); font-weight: 850; }
+    .conjugation-form { font-weight: 760; }
+    #feedback.correct { color: var(--good); background: var(--soft-good); border: 1px solid #acd7bb; }
+    #feedback.wrong, #feedback.warn { color: var(--bad); background: var(--soft-bad); border: 1px solid #e6bab6; }
+    .score { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .score div { border: 1px solid var(--line); border-radius: 8px; padding: 9px; background: #fbfcfa; }
+    .score strong { display: block; font-size: 1.45rem; }
+    textarea { width: 100%; min-height: 120px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: 13px ui-monospace, Consolas, monospace; }
+    .side-actions button { width: 100%; margin: 6px 0 0; }
+    .import-tools { border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; background: #fbfcfa; }
+    .import-tools summary { cursor: pointer; font-weight: 850; }
+    .import-tools:not([open]) { padding-bottom: 9px; }
+    .small { font-size: .9rem; color: var(--muted); line-height: 1.35; }
+    @media (max-width: 1250px) { main { grid-template-columns: 1fr; } aside { grid-template-columns: 240px 1fr; align-items: start; } }
+    @media (max-width: 1100px) { .grid { grid-template-columns: 190px minmax(0, 1fr); } #tenses { grid-template-columns: repeat(2, minmax(230px, 1fr)); } }
+    @media (max-width: 820px) { main, .grid, #tenses { grid-template-columns: 1fr; } .top { display: block; } }
+  </style>
+</head>
+<body>
+<main>
+  <section>
+    <div class="top"><h1>Italian Verb Drill</h1><div id="counter">New random sentence</div></div>
+    <p id="sentence"></p>
+    <form id="quiz" autocomplete="off">
+      <div class="grid">
+        <fieldset><legend>Person</legend><div id="people"></div></fieldset>
+        <fieldset><legend>Verb tense</legend><div id="tenses"></div></fieldset>
+      </div>
+      <button class="primary" type="submit">Check answer</button>
+      <button type="button" id="explain" hidden>Explain answer</button>
+      <button type="button" id="next">New sentence</button>
+      <button type="button" id="reset">Reset score</button>
+    </form>
+    <p id="feedback" aria-live="polite"></p>
+    <div id="conjugationPanel" class="conjugation-panel" hidden></div>
+  </section>
+  <aside>
+    <div class="score">
+      <div><strong id="correctCount">0</strong><span class="muted">correct</span></div>
+      <div><strong id="attemptCount">0</strong><span class="muted">checked</span></div>
+    </div>
+    <details class="import-tools">
+      <summary>Import quiz questions</summary>
+      <p class="small">Copy the prompt, ask ChatGPT, then paste the JSON here and import it.</p>
+      <textarea id="importBox" spellcheck="false" placeholder='[{"sentence":"Sto studiando la grammatica.","person":"io","tense":"presente progressivo","translation":"I am studying grammar."}]'></textarea>
+      <div class="side-actions">
+        <button type="button" id="copyPrompt">Copy ChatGPT prompt</button>
+        <button type="button" id="importSentences">Import pasted sentences</button>
+      </div>
+    </details>
+  </aside>
+</main>
+<script>
+const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
+const tenses = [
+  "presente",
+  "presente progressivo",
+  "passato prossimo",
+  "imperfetto",
+  "trapassato prossimo",
+  "futuro semplice",
+  "futuro anteriore",
+  "condizionale presente",
+  "condizionale passato"
+];
+const tenseHints = {
+  presente: "The presente describes what happens now or generally. Look for endings like -o, -i, -a/-e, -iamo, -ate/-ete/-ite, or -ano/-ono.",
+  "presente progressivo": "The presente progressivo uses stare in the present plus the gerund, like sto parlando or stanno dormendo.",
+  "passato prossimo": "The passato prossimo uses avere or essere in the present plus a past participle, like ho parlato or sono stato.",
+  imperfetto: "The imperfetto describes ongoing or habitual past action. Common endings include -vo, -vi, -va, -vamo, -vate, and -vano.",
+  "trapassato prossimo": "The trapassato prossimo means had done something. It uses the imperfetto of avere or essere plus a past participle, like avevo parlato or ero stato.",
+  "futuro semplice": "The futuro semplice describes what will happen. Common endings include -r\u00f2, -rai, -r\u00e0, -remo, -rete, and -ranno.",
+  "futuro anteriore": "The futuro anteriore means will have done something. It uses the future of avere or essere plus a past participle, like avr\u00f2 parlato or sar\u00f2 stato.",
+  "condizionale presente": "The condizionale presente describes what would happen. Common endings include -rei, -resti, -rebbe, -remmo, -reste, and -rebbero.",
+  "condizionale passato": "The condizionale passato means would have done something. It uses the conditional of avere or essere plus a past participle, like avrei parlato or sarei stato."
+};
+const endings = {
+  parlare: {
+    "presente": { io:"parlo", tu:"parli", "lui/lei":"parla", noi:"parliamo", voi:"parlate", loro:"parlano" },
+    "presente progressivo": { io:"sto parlando", tu:"stai parlando", "lui/lei":"sta parlando", noi:"stiamo parlando", voi:"state parlando", loro:"stanno parlando" },
+    "passato prossimo": { io:"ho parlato", tu:"hai parlato", "lui/lei":"ha parlato", noi:"abbiamo parlato", voi:"avete parlato", loro:"hanno parlato" },
+    "imperfetto": { io:"parlavo", tu:"parlavi", "lui/lei":"parlava", noi:"parlavamo", voi:"parlavate", loro:"parlavano" },
+    "trapassato prossimo": { io:"avevo parlato", tu:"avevi parlato", "lui/lei":"aveva parlato", noi:"avevamo parlato", voi:"avevate parlato", loro:"avevano parlato" },
+    "futuro semplice": { io:"parler\u00f2", tu:"parlerai", "lui/lei":"parler\u00e0", noi:"parleremo", voi:"parlerete", loro:"parleranno" },
+    "futuro anteriore": { io:"avr\u00f2 parlato", tu:"avrai parlato", "lui/lei":"avr\u00e0 parlato", noi:"avremo parlato", voi:"avrete parlato", loro:"avranno parlato" },
+    "condizionale presente": { io:"parlerei", tu:"parleresti", "lui/lei":"parlerebbe", noi:"parleremmo", voi:"parlereste", loro:"parlerebbero" },
+    "condizionale passato": { io:"avrei parlato", tu:"avresti parlato", "lui/lei":"avrebbe parlato", noi:"avremmo parlato", voi:"avreste parlato", loro:"avrebbero parlato" }
+  },
+  finire: {
+    "presente": { io:"finisco", tu:"finisci", "lui/lei":"finisce", noi:"finiamo", voi:"finite", loro:"finiscono" },
+    "presente progressivo": { io:"sto finendo", tu:"stai finendo", "lui/lei":"sta finendo", noi:"stiamo finendo", voi:"state finendo", loro:"stanno finendo" },
+    "passato prossimo": { io:"ho finito", tu:"hai finito", "lui/lei":"ha finito", noi:"abbiamo finito", voi:"avete finito", loro:"hanno finito" },
+    "imperfetto": { io:"finivo", tu:"finivi", "lui/lei":"finiva", noi:"finivamo", voi:"finivate", loro:"finivano" },
+    "trapassato prossimo": { io:"avevo finito", tu:"avevi finito", "lui/lei":"aveva finito", noi:"avevamo finito", voi:"avevate finito", loro:"avevano finito" },
+    "futuro semplice": { io:"finir\u00f2", tu:"finirai", "lui/lei":"finir\u00e0", noi:"finiremo", voi:"finirete", loro:"finiranno" },
+    "futuro anteriore": { io:"avr\u00f2 finito", tu:"avrai finito", "lui/lei":"avr\u00e0 finito", noi:"avremo finito", voi:"avrete finito", loro:"avranno finito" },
+    "condizionale presente": { io:"finirei", tu:"finiresti", "lui/lei":"finirebbe", noi:"finiremmo", voi:"finireste", loro:"finirebbero" },
+    "condizionale passato": { io:"avrei finito", tu:"avresti finito", "lui/lei":"avrebbe finito", noi:"avremmo finito", voi:"avreste finito", loro:"avrebbero finito" }
+  },
+  dormire: {
+    "presente": { io:"dormo", tu:"dormi", "lui/lei":"dorme", noi:"dormiamo", voi:"dormite", loro:"dormono" },
+    "presente progressivo": { io:"sto dormendo", tu:"stai dormendo", "lui/lei":"sta dormendo", noi:"stiamo dormendo", voi:"state dormendo", loro:"stanno dormendo" },
+    "passato prossimo": { io:"ho dormito", tu:"hai dormito", "lui/lei":"ha dormito", noi:"abbiamo dormito", voi:"avete dormito", loro:"hanno dormito" },
+    "imperfetto": { io:"dormivo", tu:"dormivi", "lui/lei":"dormiva", noi:"dormivamo", voi:"dormivate", loro:"dormivano" },
+    "trapassato prossimo": { io:"avevo dormito", tu:"avevi dormito", "lui/lei":"aveva dormito", noi:"avevamo dormito", voi:"avevate dormito", loro:"avevano dormito" },
+    "futuro semplice": { io:"dormir\u00f2", tu:"dormirai", "lui/lei":"dormir\u00e0", noi:"dormiremo", voi:"dormirete", loro:"dormiranno" },
+    "futuro anteriore": { io:"avr\u00f2 dormito", tu:"avrai dormito", "lui/lei":"avr\u00e0 dormito", noi:"avremo dormito", voi:"avrete dormito", loro:"avranno dormito" },
+    "condizionale presente": { io:"dormirei", tu:"dormiresti", "lui/lei":"dormirebbe", noi:"dormiremmo", voi:"dormireste", loro:"dormirebbero" },
+    "condizionale passato": { io:"avrei dormito", tu:"avresti dormito", "lui/lei":"avrebbe dormito", noi:"avremmo dormito", voi:"avreste dormito", loro:"avrebbero dormito" }
+  },
+  essere: {
+    "presente": { io:"sono", tu:"sei", "lui/lei":"\u00e8", noi:"siamo", voi:"siete", loro:"sono" },
+    "passato prossimo": { io:"sono stato", tu:"sei stato", "lui/lei":"\u00e8 stato", noi:"siamo stati", voi:"siete stati", loro:"sono stati" },
+    "imperfetto": { io:"ero", tu:"eri", "lui/lei":"era", noi:"eravamo", voi:"eravate", loro:"erano" },
+    "trapassato prossimo": { io:"ero stato", tu:"eri stato", "lui/lei":"era stato", noi:"eravamo stati", voi:"eravate stati", loro:"erano stati" },
+    "futuro semplice": { io:"sar\u00f2", tu:"sarai", "lui/lei":"sar\u00e0", noi:"saremo", voi:"sarete", loro:"saranno" },
+    "futuro anteriore": { io:"sar\u00f2 stato", tu:"sarai stato", "lui/lei":"sar\u00e0 stato", noi:"saremo stati", voi:"sarete stati", loro:"saranno stati" },
+    "condizionale presente": { io:"sarei", tu:"saresti", "lui/lei":"sarebbe", noi:"saremmo", voi:"sareste", loro:"sarebbero" },
+    "condizionale passato": { io:"sarei stato", tu:"saresti stato", "lui/lei":"sarebbe stato", noi:"saremmo stati", voi:"sareste stati", loro:"sarebbero stati" }
+  }
+};
+const verbContexts = {
+  parlare: [
+    { it: "con il professore", en: "with the teacher" },
+    { it: "al telefono", en: "on the phone" },
+    { it: "della lezione", en: "about the lesson" },
+    { it: "con Maria dopo cena", en: "with Maria after dinner" },
+    { it: "lentamente", en: "slowly" }
+  ],
+  finire: [
+    { it: "i compiti", en: "the homework" },
+    { it: "il libro", en: "the book" },
+    { it: "il progetto", en: "the project" },
+    { it: "la lezione", en: "the lesson" },
+    { it: "tutto prima di cena", en: "everything before dinner" }
+  ],
+  dormire: [
+    { it: "bene", en: "well" },
+    { it: "poco", en: "a little" },
+    { it: "fino a tardi", en: "until late" },
+    { it: "in albergo", en: "at the hotel" },
+    { it: "per otto ore", en: "for eight hours" }
+  ]
+};
+const adjectiveForms = {
+  pronto: { io:"pronto", tu:"pronto", "lui/lei":"pronto", noi:"pronti", voi:"pronti", loro:"pronti" },
+  stanco: { io:"stanco", tu:"stanco", "lui/lei":"stanco", noi:"stanchi", voi:"stanchi", loro:"stanchi" },
+  felice: { io:"felice", tu:"felice", "lui/lei":"felice", noi:"felici", voi:"felici", loro:"felici" },
+  "in ritardo": { io:"in ritardo", tu:"in ritardo", "lui/lei":"in ritardo", noi:"in ritardo", voi:"in ritardo", loro:"in ritardo" },
+  "molto gentile": { io:"molto gentile", tu:"molto gentile", "lui/lei":"molto gentile", noi:"molto gentili", voi:"molto gentili", loro:"molto gentili" }
+};
+const adjectives = Object.keys(adjectiveForms);
+const adjectiveMeanings = {
+  pronto: "ready",
+  pronti: "ready",
+  stanco: "tired",
+  stanchi: "tired",
+  felice: "happy",
+  felici: "happy",
+  "in ritardo": "late",
+  "molto gentile": "very kind",
+  "molto gentili": "very kind"
+};
+const verbMeanings = {
+  parlare: "to speak",
+  finire: "to finish",
+  dormire: "to sleep",
+  essere: "to be"
+};
+const personMeanings = {
+  io: "I",
+  tu: "you",
+  "lui/lei": "he/she",
+  noi: "we",
+  voi: "you all",
+  loro: "they"
+};
+const essereTranslationTemplates = {
+  presente: { io:"am", tu:"are", "lui/lei":"is", noi:"are", voi:"are", loro:"are" },
+  "presente progressivo": { io:"am being", tu:"are being", "lui/lei":"is being", noi:"are being", voi:"are being", loro:"are being" },
+  "passato prossimo": { io:"was / have been", tu:"were / have been", "lui/lei":"was / has been", noi:"were / have been", voi:"were / have been", loro:"were / have been" },
+  imperfetto: { io:"was / used to be", tu:"were / used to be", "lui/lei":"was / used to be", noi:"were / used to be", voi:"were / used to be", loro:"were / used to be" },
+  "trapassato prossimo": { io:"had been", tu:"had been", "lui/lei":"had been", noi:"had been", voi:"had been", loro:"had been" },
+  "futuro semplice": { io:"will be", tu:"will be", "lui/lei":"will be", noi:"will be", voi:"will be", loro:"will be" },
+  "futuro anteriore": { io:"will have been", tu:"will have been", "lui/lei":"will have been", noi:"will have been", voi:"will have been", loro:"will have been" },
+  "condizionale presente": { io:"would be", tu:"would be", "lui/lei":"would be", noi:"would be", voi:"would be", loro:"would be" },
+  "condizionale passato": { io:"would have been", tu:"would have been", "lui/lei":"would have been", noi:"would have been", voi:"would have been", loro:"would have been" }
+};
+const translationTemplates = {
+  presente: { parlare:"speak", finire:"finish", dormire:"sleep", essere:"am/is/are" },
+  "presente progressivo": { parlare:"am/is/are speaking", finire:"am/is/are finishing", dormire:"am/is/are sleeping", essere:"am/is/are being" },
+  "passato prossimo": { parlare:"spoke / have spoken", finire:"finished / have finished", dormire:"slept / have slept", essere:"was/were / have been" },
+  imperfetto: { parlare:"was/were speaking / used to speak", finire:"was/were finishing / used to finish", dormire:"was/were sleeping / used to sleep", essere:"was/were / used to be" },
+  "trapassato prossimo": { parlare:"had spoken", finire:"had finished", dormire:"had slept", essere:"had been" },
+  "futuro semplice": { parlare:"will speak", finire:"will finish", dormire:"will sleep", essere:"will be" },
+  "futuro anteriore": { parlare:"will have spoken", finire:"will have finished", dormire:"will have slept", essere:"will have been" },
+  "condizionale presente": { parlare:"would speak", finire:"would finish", dormire:"would sleep", essere:"would be" },
+  "condizionale passato": { parlare:"would have spoken", finire:"would have finished", dormire:"would have slept", essere:"would have been" }
+};
+const curatedQuestions = [
+  { sentence:"Ho parlato con il medico stamattina.", person:"io", tense:"passato prossimo", verb:"parlare", form:"ho parlato", translation:"I spoke with the doctor this morning." },
+  { sentence:"Stavamo parlando della vacanza.", person:"noi", tense:"presente progressivo", verb:"parlare", form:"stiamo parlando", translation:"We are talking about the vacation." },
+  { sentence:"Avevate finito i compiti prima di uscire.", person:"voi", tense:"trapassato prossimo", verb:"finire", form:"avevate finito", translation:"You all had finished the homework before going out." },
+  { sentence:"Finiranno il progetto entro venerd\u00ec.", person:"loro", tense:"futuro semplice", verb:"finire", form:"finiranno", translation:"They will finish the project by Friday." },
+  { sentence:"Dormiresti meglio con meno caff\u00e8.", person:"tu", tense:"condizionale presente", verb:"dormire", form:"dormiresti", translation:"You would sleep better with less coffee." },
+  { sentence:"Avrei dormito ancora un'ora.", person:"io", tense:"condizionale passato", verb:"dormire", form:"avrei dormito", translation:"I would have slept another hour." },
+  { sentence:"Saremo stati in ritardo.", person:"noi", tense:"futuro anteriore", verb:"essere", form:"saremo stati", translation:"We will have been late." },
+  { sentence:"Erano molto gentili con tutti.", person:"loro", tense:"imperfetto", verb:"essere", form:"erano", translation:"They were very kind to everyone." }
+];
+let imported = [];
+let current = null;
+let attempts = 0;
+let correct = 0;
+let answered = false;
+let gotThisOne = false;
+const form = document.getElementById("quiz");
+const feedback = document.getElementById("feedback");
+const conjugationPanel = document.getElementById("conjugationPanel");
+const explainButton = document.getElementById("explain");
+function choice(list) { return list[Math.floor(Math.random() * list.length)]; }
+function capitalize(text) { return text.charAt(0).toUpperCase() + text.slice(1); }
+function radios(list, name, target) { target.innerHTML = list.map(x => '<label><input type="radio" name="' + name + '" value="' + x + '"><span>' + x + '</span></label>').join(""); }
+function tenseRadios(target) {
+  const columns = [
+    [
+      { title: "Present", items: ["presente", "presente progressivo"] },
+      { title: "Past", items: ["passato prossimo", "imperfetto", "trapassato prossimo"] }
+    ],
+    [
+      { title: "Future", items: ["futuro semplice", "futuro anteriore"] },
+      { title: "Conditional", items: ["condizionale presente", "condizionale passato"] }
+    ]
+  ];
+  target.innerHTML = columns.map(column => '<div class="tense-stack">' + column.map(group => '<div class="tense-group"><div class="tense-group-title">' + group.title + '</div>' + group.items.map(x => '<label><input type="radio" name="tense" value="' + x + '"><span>' + x + '</span></label>').join("") + '</div>').join("") + '</div>').join("");
+}
+function selected(name) { return document.querySelector('input[name="' + name + '"]:checked')?.value; }
+function clearSelections() { document.querySelectorAll('input[type="radio"]').forEach(input => { input.checked = false; input.defaultChecked = false; input.removeAttribute("checked"); }); }
+function renderAnswerControls() {
+  radios(people, "person", document.getElementById("people"));
+  tenseRadios(document.getElementById("tenses"));
+  clearSelections();
+}
+function clearAnswerHighlights() { document.querySelectorAll("label.answer-correct, label.answer-wrong").forEach(label => label.classList.remove("answer-correct", "answer-wrong")); }
+function markChoice(name, value, className) { const input = Array.from(document.querySelectorAll('input[name="' + name + '"]')).find(option => option.value === value); if (input) input.closest("label")?.classList.add(className); }
+function markCheckedAnswers(person, tense) { clearAnswerHighlights(); markChoice("person", current.person, "answer-correct"); markChoice("tense", current.tense, "answer-correct"); if (person !== current.person) markChoice("person", person, "answer-wrong"); if (tense !== current.tense) markChoice("tense", tense, "answer-wrong"); }
+function show(kind, text) { feedback.className = 'show ' + kind; feedback.textContent = text; }
+function translationLine() { return current.translation ? " Translation: " + current.translation : ""; }
+function hideConjugation() { conjugationPanel.hidden = true; conjugationPanel.innerHTML = ""; }
+function showConjugation() {
+  if (!current.verb || !endings[current.verb]?.[current.tense]) { hideConjugation(); return; }
+  const forms = endings[current.verb][current.tense];
+  conjugationPanel.hidden = false;
+  conjugationPanel.innerHTML = '<div class="conjugation-title">' + current.verb + ' - ' + current.tense + '</div><div class="conjugation-grid">' + people.map(person => '<div class="conjugation-row"><span class="conjugation-person">' + person + '</span><span class="conjugation-form">' + forms[person] + '</span></div>').join("") + '</div>';
+}
+function explainCurrent() {
+  const formText = current.form || current.sentence.split(/\s+/).slice(0, 2).join(" ") || "the verb";
+  const meaning = current.verb ? " The infinitive " + current.verb + " means " + (verbMeanings[current.verb] || "this verb") + "." : "";
+  const translation = current.translation ? " Translation: " + current.translation : "";
+  return formText + " is " + current.person + " in the " + current.tense + "." + meaning + " " + (tenseHints[current.tense] || "Look at the verb form and auxiliary to identify the tense.") + translation;
+}
+function updateScore() { correctCount.textContent = correct; attemptCount.textContent = attempts; }
+function clearQuizUrl() { if (typeof location !== "undefined" && location.search) history.replaceState(null, "", location.pathname); }
+function availablePairs() {
+  const pairs = [];
+  for (const verb of Object.keys(endings)) {
+    for (const tense of tenses) {
+      if (!endings[verb][tense]) continue;
+      for (const person of people) {
+        const formText = endings[verb][tense][person];
+        const duplicateCount = people.filter(other => endings[verb][tense]?.[other] === formText).length;
+        if (duplicateCount === 1) pairs.push({ verb, tense, person, form: formText });
+      }
+    }
+  }
+  return pairs;
+}
+const localPairs = availablePairs();
+function englishVerbPhrase(pair) {
+  if (pair.verb === "essere") return essereTranslationTemplates[pair.tense]?.[pair.person] || "be";
+  const base = {
+    parlare: "speak",
+    finire: "finish",
+    dormire: "sleep"
+  }[pair.verb] || pair.verb;
+  const third = { parlare: "speaks", finire: "finishes", dormire: "sleeps" }[pair.verb] || base;
+  const gerund = { parlare: "speaking", finire: "finishing", dormire: "sleeping" }[pair.verb] || base;
+  const past = { parlare: "spoken", finire: "finished", dormire: "slept" }[pair.verb] || base;
+  const simplePast = { parlare: "spoke", finire: "finished", dormire: "slept" }[pair.verb] || base;
+  const bePresent = { io: "am", tu: "are", "lui/lei": "is", noi: "are", voi: "are", loro: "are" }[pair.person];
+  const bePast = { io: "was", tu: "were", "lui/lei": "was", noi: "were", voi: "were", loro: "were" }[pair.person];
+  switch (pair.tense) {
+    case "presente": return pair.person === "lui/lei" ? third : base;
+    case "presente progressivo": return bePresent + " " + gerund;
+    case "passato prossimo": return simplePast + " / have " + past;
+    case "imperfetto": return bePast + " " + gerund + " / used to " + base;
+    case "trapassato prossimo": return "had " + past;
+    case "futuro semplice": return "will " + base;
+    case "futuro anteriore": return "will have " + past;
+    case "condizionale presente": return "would " + base;
+    case "condizionale passato": return "would have " + past;
+    default: return base;
+  }
+}
+function makeTranslation(pair, extra, context) {
+  const subject = personMeanings[pair.person] || pair.person;
+  const verbPhrase = englishVerbPhrase(pair);
+  const extraMeaning = pair.verb === "essere" ? (adjectiveMeanings[extra] || extra) : (context?.en || extra);
+  return subject + " " + verbPhrase + " " + extraMeaning + ".";
+}
+function makeLocalQuestion() {
+  const pair = choice(localPairs);
+  let extra = "";
+  let context = null;
+  if (pair.verb === "essere") {
+    const adjectiveKey = choice(adjectives);
+    extra = adjectiveForms[adjectiveKey][pair.person];
+  } else {
+    context = choice(verbContexts[pair.verb]);
+    extra = context.it;
+  }
+  return { sentence: capitalize(pair.form + " " + extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: makeTranslation(pair, extra, context) };
+}
+function normalizePerson(value) {
+  const v = String(value || "").toLowerCase().trim();
+  if (["io", "tu", "noi", "voi", "loro"].includes(v)) return v;
+  if (["lui", "lei", "egli", "ella", "lui/lei", "3rd person singular"].includes(v)) return "lui/lei";
+  return "";
+}
+function normalizeVerb(value) {
+  const v = String(value || "").toLowerCase().trim();
+  return endings[v] ? v : "";
+}
+function inferVerbFromSentence(sentenceText, tense, person) {
+  const clean = String(sentenceText || "").toLowerCase();
+  for (const verb of Object.keys(endings)) {
+    const formText = endings[verb]?.[tense]?.[person];
+    if (formText && clean.includes(formText.toLowerCase())) return { verb, form: formText };
+  }
+  return { verb: "", form: "" };
+}
+function normalizeTense(value) {
+  const v = String(value || "").toLowerCase().trim();
+  const aliases = {
+    present: "presente",
+    "present progressive": "presente progressivo",
+    "presente progressiva": "presente progressivo",
+    "present perfect": "passato prossimo",
+    imperfect: "imperfetto",
+    future: "futuro semplice",
+    conditional: "condizionale presente",
+    condizionale: "condizionale presente",
+    "past conditional": "condizionale passato",
+    "conditional past": "condizionale passato",
+    "pluperfect": "trapassato prossimo",
+    "future perfect": "futuro anteriore"
+  };
+  return aliases[v] || v;
+}
+function nextQuestion() {
+  clearQuizUrl();
+  current = imported.length ? choice(imported) : (Math.random() < 0.35 ? choice(curatedQuestions) : makeLocalQuestion());
+  sentence.textContent = current.sentence;
+  counter.textContent = imported.length ? "Random imported sentence" : "Random generated sentence";
+  renderAnswerControls();
+  answered = false;
+  gotThisOne = false;
+  form.reset();
+  clearSelections();
+  clearAnswerHighlights();
+  hideConjugation();
+  feedback.className = "";
+  feedback.textContent = "";
+  explainButton.hidden = true;
+}
+renderAnswerControls();
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  const person = selected("person");
+  const tense = selected("tense");
+  if (!person || !tense) return show("warn", "Pick one option in each group first.");
+  explainButton.hidden = true;
+  if (!answered) { attempts++; answered = true; }
+  markCheckedAnswers(person, tense);
+  showConjugation();
+  if (person === current.person && tense === current.tense) {
+    if (!gotThisOne) { correct++; gotThisOne = true; }
+    show("correct", "Correct." + translationLine());
+  } else {
+    show("wrong", "Not quite. Correct answer: " + current.person + ", " + current.tense + "." + translationLine());
+    explainButton.hidden = false;
+  }
+  updateScore();
+});
+explainButton.onclick = () => show("wrong", explainCurrent());
+next.onclick = nextQuestion;
+reset.onclick = () => { attempts = 0; correct = 0; updateScore(); nextQuestion(); };
+copyPrompt.onclick = async () => {
+  const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. verb must be the infinitive, such as parlare, finire, dormire, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
+  await navigator.clipboard.writeText(prompt);
+  show("correct", "Prompt copied. Paste it into ChatGPT, then paste the JSON result into the import box.");
+};
+importSentences.onclick = () => {
+  try {
+    const data = JSON.parse(importBox.value);
+    imported = data.map(item => {
+      const sentenceText = String(item.sentence || "").trim();
+      const person = normalizePerson(item.person);
+      const tense = normalizeTense(item.tense);
+      const inferred = inferVerbFromSentence(sentenceText, tense, person);
+      const verb = normalizeVerb(item.verb) || inferred.verb;
+      const form = item.form || inferred.form;
+      return { sentence: sentenceText, person, tense, verb, form, translation: String(item.translation || "") };
+    }).filter(item => item.sentence && people.includes(item.person) && tenses.includes(item.tense));
+    if (!imported.length) throw new Error("No valid sentences found");
+    show("correct", "Imported " + imported.length + " ChatGPT sentences.");
+    importBox.value = "";
+    document.querySelector(".import-tools")?.removeAttribute("open");
+    nextQuestion();
+  } catch (error) {
+    show("wrong", "I couldn't import that JSON. Make sure ChatGPT returns a plain array of sentence objects.");
+  }
+};
+nextQuestion();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
