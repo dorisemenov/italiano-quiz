@@ -1,0 +1,54 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Italiano Quiz Changelog</title>
+  <style>
+    :root { --ink:#17211d; --muted:#617167; --line:#cfd8d2; --page:#f5f7f3; --accent:#0d7f6f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--page); color: var(--ink); padding: 24px; }
+    main { width: min(900px, 100%); margin: 0 auto; background: white; border: 1px solid var(--line); border-radius: 8px; padding: clamp(18px, 3vw, 30px); box-shadow: 0 18px 50px #0002; }
+    .top { display: flex; justify-content: space-between; gap: 16px; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 18px; }
+    h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); }
+    a { color: var(--accent); font-weight: 800; }
+    .back { color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; background: #fbfcfa; }
+    section { border-bottom: 1px solid var(--line); padding: 16px 0; }
+    section:last-child { border-bottom: 0; }
+    h2 { margin: 0 0 8px; font-size: 1.05rem; }
+    ul { margin: 0; padding-left: 22px; }
+    li { margin: 5px 0; }
+    .muted { color: var(--muted); font-size: .92rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="top">
+      <h1>Changelog</h1>
+      <a class="back" href="index.html">Back to quiz</a>
+    </div>
+    <p class="muted">Versions are listed newest first. Unpublished local changes are grouped together until they are pushed to GitHub.</p>
+
+    <section>
+      <h2>20260703_1038 - unpublished local changes</h2>
+      <ul>
+        <li>Added 50 unique contextual quiz sentences.</li>
+        <li>Changed the quiz to present each sentence once before repeats.</li>
+        <li>Added a sentences-left counter.</li>
+        <li>Added an option to redo wrong answers until they are answered correctly.</li>
+        <li>Added this changelog page and the Changelog link in the quiz header.</li>
+        <li>Removed the Reset score button because refreshing the page already restarts the quiz.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>20260702_2131 - published</h2>
+      <ul>
+        <li>Cleared answer feedback, explanations, highlights, and conjugation table when moving to a new sentence.</li>
+        <li>Published the reset-state fix to GitHub Pages.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
+

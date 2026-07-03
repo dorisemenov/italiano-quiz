@@ -14,6 +14,9 @@
     aside { padding: 14px; align-self: start; display: grid; gap: 10px; }
     h1 { margin: 0; font-size: clamp(1.25rem, 2.2vw, 1.75rem); letter-spacing: 0; }
     .top { display: flex; justify-content: space-between; gap: 16px; align-items: start; margin-bottom: 14px; }
+    .top-actions { display: grid; gap: 6px; justify-items: end; }
+    .changelog-link { color: var(--muted); text-decoration: none; font-weight: 850; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: #fbfcfa; font-size: .85rem; }
+    .changelog-link:hover { color: var(--accent-dark); border-color: #95aaa0; }
     #counter, .muted { color: var(--muted); font-weight: 650; }
     #sentence { font: clamp(1.45rem, 3vw, 2.65rem)/1.12 Georgia, "Times New Roman", serif; margin: 0 0 16px; padding: 18px 0; border-block: 1px solid var(--line); }
     .grid { display: grid; grid-template-columns: 210px minmax(720px, 1fr); gap: 18px; align-items: start; }
@@ -46,6 +49,7 @@
     .score { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .score div { border: 1px solid var(--line); border-radius: 8px; padding: 9px; background: #fbfcfa; }
     .score strong { display: block; font-size: 1.45rem; }
+    .retry-option { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: center; min-height: 34px; padding: 7px 9px; margin: 0; border: 1px solid var(--line); border-radius: 8px; background: #fbfcfa; cursor: pointer; font-weight: 750; font-size: .9rem; }
     textarea { width: 100%; min-height: 120px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; padding: 10px; font: 13px ui-monospace, Consolas, monospace; }
     .side-actions button { width: 100%; margin: 6px 0 0; }
     .import-tools { border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; background: #fbfcfa; }
@@ -62,7 +66,7 @@
 <main>
   <div class="version-stamp" id="versionStamp"></div>
   <section>
-    <div class="top"><h1>Italian Verb Drill</h1><div id="counter">New random sentence</div></div>
+    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="changelog-link" href="changelog.html" title="View changelog">Changelog</a><div id="counter">50 sentences left</div></div></div>
     <p id="sentence"></p>
     <form id="quiz" autocomplete="off">
       <div class="grid">
@@ -72,7 +76,6 @@
       <button class="primary" type="submit">Check answer</button>
       <button type="button" id="explain" hidden>Explain answer</button>
       <button type="button" id="next">New sentence</button>
-      <button type="button" id="reset">Reset score</button>
     </form>
     <p id="feedback" aria-live="polite" hidden></p>
     <div id="conjugationPanel" class="conjugation-panel" hidden></div>
@@ -82,6 +85,7 @@
       <div><strong id="correctCount">0</strong><span class="muted">correct</span></div>
       <div><strong id="attemptCount">0</strong><span class="muted">checked</span></div>
     </div>
+    <label class="retry-option"><input type="checkbox" id="retryWrong"><span>Redo wrong answers until correct</span></label>
     <details class="import-tools">
       <summary>Import quiz questions</summary>
       <p class="small">Copy the prompt, ask ChatGPT, then paste the JSON here and import it.</p>
@@ -94,7 +98,7 @@
   </aside>
 </main>
 <script>
-const APP_VERSION = "20260702_2131";
+const APP_VERSION = "20260703_1038";
 const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
 const tenses = [
   "presente",
@@ -242,14 +246,60 @@ const translationTemplates = {
   "condizionale passato": { parlare:"would have spoken", finire:"would have finished", dormire:"would have slept", essere:"would have been" }
 };
 const curatedQuestions = [
-  { sentence:"Ho parlato con il medico stamattina.", person:"io", tense:"passato prossimo", verb:"parlare", form:"ho parlato", translation:"I spoke with the doctor this morning." },
-  { sentence:"Stavamo parlando della vacanza.", person:"noi", tense:"presente progressivo", verb:"parlare", form:"stiamo parlando", translation:"We are talking about the vacation." },
-  { sentence:"Avevate finito i compiti prima di uscire.", person:"voi", tense:"trapassato prossimo", verb:"finire", form:"avevate finito", translation:"You all had finished the homework before going out." },
-  { sentence:"Finiranno il progetto entro venerd\u00ec.", person:"loro", tense:"futuro semplice", verb:"finire", form:"finiranno", translation:"They will finish the project by Friday." },
-  { sentence:"Dormiresti meglio con meno caff\u00e8.", person:"tu", tense:"condizionale presente", verb:"dormire", form:"dormiresti", translation:"You would sleep better with less coffee." },
-  { sentence:"Avrei dormito ancora un'ora.", person:"io", tense:"condizionale passato", verb:"dormire", form:"avrei dormito", translation:"I would have slept another hour." },
-  { sentence:"Saremo stati in ritardo.", person:"noi", tense:"futuro anteriore", verb:"essere", form:"saremo stati", translation:"We will have been late." },
-  { sentence:"Erano molto gentili con tutti.", person:"loro", tense:"imperfetto", verb:"essere", form:"erano", translation:"They were very kind to everyone." }
+  { sentence:"Parlo con il farmacista perch\u00e9 ho mal di testa.", person:"io", tense:"presente", verb:"parlare", form:"parlo", translation:"I speak with the pharmacist because I have a headache." },
+  { sentence:"Stai parlando troppo veloce per me.", person:"tu", tense:"presente progressivo", verb:"parlare", form:"stai parlando", translation:"You are speaking too fast for me." },
+  { sentence:"Ha parlato con il proprietario dell'appartamento ieri sera.", person:"lui/lei", tense:"passato prossimo", verb:"parlare", form:"ha parlato", translation:"He/she spoke with the apartment owner last night." },
+  { sentence:"Parlavamo spesso di grammatica dopo la lezione.", person:"noi", tense:"imperfetto", verb:"parlare", form:"parlavamo", translation:"We often used to talk about grammar after class." },
+  { sentence:"Avevate parlato con l'insegnante prima dell'esame.", person:"voi", tense:"trapassato prossimo", verb:"parlare", form:"avevate parlato", translation:"You all had spoken with the teacher before the exam." },
+  { sentence:"Parleranno con il direttore domani mattina.", person:"loro", tense:"futuro semplice", verb:"parlare", form:"parleranno", translation:"They will speak with the manager tomorrow morning." },
+  { sentence:"Avr\u00f2 parlato con tutti prima della riunione.", person:"io", tense:"futuro anteriore", verb:"parlare", form:"avr\u00f2 parlato", translation:"I will have spoken with everyone before the meeting." },
+  { sentence:"Parleresti meglio se fossi meno nervoso.", person:"tu", tense:"condizionale presente", verb:"parlare", form:"parleresti", translation:"You would speak better if you were less nervous." },
+  { sentence:"Avrebbe parlato con te, ma era gi\u00e0 tardi.", person:"lui/lei", tense:"condizionale passato", verb:"parlare", form:"avrebbe parlato", translation:"He/she would have spoken with you, but it was already late." },
+  { sentence:"Parliamo con i vicini del rumore ogni settimana.", person:"noi", tense:"presente", verb:"parlare", form:"parliamo", translation:"We speak with the neighbors about the noise every week." },
+
+  { sentence:"Finisci il modulo prima di consegnarlo allo sportello.", person:"tu", tense:"presente", verb:"finire", form:"finisci", translation:"You finish the form before handing it in at the counter." },
+  { sentence:"Sta finendo la relazione per il lavoro.", person:"lui/lei", tense:"presente progressivo", verb:"finire", form:"sta finendo", translation:"He/she is finishing the report for work." },
+  { sentence:"Abbiamo finito il corso B1 la settimana scorsa.", person:"noi", tense:"passato prossimo", verb:"finire", form:"abbiamo finito", translation:"We finished the B1 course last week." },
+  { sentence:"Finivate sempre i compiti prima di cena.", person:"voi", tense:"imperfetto", verb:"finire", form:"finivate", translation:"You all always used to finish the homework before dinner." },
+  { sentence:"Avevano finito la spesa quando \u00e8 iniziato a piovere.", person:"loro", tense:"trapassato prossimo", verb:"finire", form:"avevano finito", translation:"They had finished the shopping when it started to rain." },
+  { sentence:"Finir\u00f2 il libro durante il viaggio in treno.", person:"io", tense:"futuro semplice", verb:"finire", form:"finir\u00f2", translation:"I will finish the book during the train trip." },
+  { sentence:"Avrai finito il turno prima delle sette.", person:"tu", tense:"futuro anteriore", verb:"finire", form:"avrai finito", translation:"You will have finished the shift before seven." },
+  { sentence:"Finirebbe il progetto oggi se avesse pi\u00f9 tempo.", person:"lui/lei", tense:"condizionale presente", verb:"finire", form:"finirebbe", translation:"He/she would finish the project today if he/she had more time." },
+  { sentence:"Avremmo finito prima, ma il computer si \u00e8 bloccato.", person:"noi", tense:"condizionale passato", verb:"finire", form:"avremmo finito", translation:"We would have finished earlier, but the computer froze." },
+  { sentence:"Finite la presentazione prima che arrivino gli ospiti.", person:"voi", tense:"presente", verb:"finire", form:"finite", translation:"You all finish the presentation before the guests arrive." },
+
+  { sentence:"Dormo poco quando bevo caff\u00e8 la sera.", person:"io", tense:"presente", verb:"dormire", form:"dormo", translation:"I sleep little when I drink coffee in the evening." },
+  { sentence:"Stai dormendo sul divano con la televisione accesa.", person:"tu", tense:"presente progressivo", verb:"dormire", form:"stai dormendo", translation:"You are sleeping on the sofa with the television on." },
+  { sentence:"Ha dormito in albergo vicino alla stazione.", person:"lui/lei", tense:"passato prossimo", verb:"dormire", form:"ha dormito", translation:"He/she slept in a hotel near the station." },
+  { sentence:"Dormivamo male quando faceva troppo caldo.", person:"noi", tense:"imperfetto", verb:"dormire", form:"dormivamo", translation:"We used to sleep badly when it was too hot." },
+  { sentence:"Avevate dormito solo tre ore prima dell'esame.", person:"voi", tense:"trapassato prossimo", verb:"dormire", form:"avevate dormito", translation:"You all had slept only three hours before the exam." },
+  { sentence:"Dormiranno dai nonni durante il fine settimana.", person:"loro", tense:"futuro semplice", verb:"dormire", form:"dormiranno", translation:"They will sleep at their grandparents' during the weekend." },
+  { sentence:"Avr\u00f2 dormito abbastanza prima del viaggio lungo.", person:"io", tense:"futuro anteriore", verb:"dormire", form:"avr\u00f2 dormito", translation:"I will have slept enough before the long trip." },
+  { sentence:"Dormiresti meglio in una stanza pi\u00f9 silenziosa.", person:"tu", tense:"condizionale presente", verb:"dormire", form:"dormiresti", translation:"You would sleep better in a quieter room." },
+  { sentence:"Avrebbe dormito ancora, ma la sveglia ha suonato.", person:"lui/lei", tense:"condizionale passato", verb:"dormire", form:"avrebbe dormito", translation:"He/she would have slept longer, but the alarm rang." },
+  { sentence:"Dormiamo sempre con la finestra un po' aperta.", person:"noi", tense:"presente", verb:"dormire", form:"dormiamo", translation:"We always sleep with the window slightly open." },
+
+  { sentence:"Sono pronto per parlare con l'impiegato del comune.", person:"io", tense:"presente", verb:"essere", form:"sono", translation:"I am ready to speak with the city office clerk." },
+  { sentence:"Sei stato molto paziente con il nuovo studente.", person:"tu", tense:"passato prossimo", verb:"essere", form:"sei stato", translation:"You were very patient with the new student." },
+  { sentence:"Era stanca dopo una giornata intera al lavoro.", person:"lui/lei", tense:"imperfetto", verb:"essere", form:"era", translation:"He/she was tired after a whole day at work." },
+  { sentence:"Eravamo stati in ritardo per colpa del traffico.", person:"noi", tense:"trapassato prossimo", verb:"essere", form:"eravamo stati", translation:"We had been late because of the traffic." },
+  { sentence:"Sarete pronti quando arriver\u00e0 il taxi.", person:"voi", tense:"futuro semplice", verb:"essere", form:"sarete", translation:"You all will be ready when the taxi arrives." },
+  { sentence:"Saranno stati felici di ricevere la notizia.", person:"loro", tense:"futuro anteriore", verb:"essere", form:"saranno stati", translation:"They will have been happy to receive the news." },
+  { sentence:"Sarei pi\u00f9 tranquillo con una spiegazione chiara.", person:"io", tense:"condizionale presente", verb:"essere", form:"sarei", translation:"I would be calmer with a clear explanation." },
+  { sentence:"Saresti stato pi\u00f9 sicuro con un po' di pratica.", person:"tu", tense:"condizionale passato", verb:"essere", form:"saresti stato", translation:"You would have been more confident with a bit of practice." },
+  { sentence:"Siamo molto gentili con i nuovi vicini.", person:"noi", tense:"presente", verb:"essere", form:"siamo", translation:"We are very kind to the new neighbors." },
+  { sentence:"Siete stati in biblioteca per studiare italiano.", person:"voi", tense:"passato prossimo", verb:"essere", form:"siete stati", translation:"You all were in the library to study Italian." },
+
+  { sentence:"Sto parlando con l'assistenza perch\u00e9 il pacco non \u00e8 arrivato.", person:"io", tense:"presente progressivo", verb:"parlare", form:"sto parlando", translation:"I am speaking with customer support because the package has not arrived." },
+  { sentence:"Hai finito la prenotazione prima di comprare i biglietti.", person:"tu", tense:"passato prossimo", verb:"finire", form:"hai finito", translation:"You finished the reservation before buying the tickets." },
+  { sentence:"Dormiva profondamente quando \u00e8 arrivata la telefonata.", person:"lui/lei", tense:"imperfetto", verb:"dormire", form:"dormiva", translation:"He/she was sleeping deeply when the phone call arrived." },
+  { sentence:"Avevamo parlato del problema prima della riunione.", person:"noi", tense:"trapassato prossimo", verb:"parlare", form:"avevamo parlato", translation:"We had spoken about the problem before the meeting." },
+  { sentence:"Finirete il trasloco entro domenica sera.", person:"voi", tense:"futuro semplice", verb:"finire", form:"finirete", translation:"You all will finish the move by Sunday evening." },
+  { sentence:"Avranno dormito poco dopo il concerto.", person:"loro", tense:"futuro anteriore", verb:"dormire", form:"avranno dormito", translation:"They will have slept little after the concert." },
+  { sentence:"Parlerei con il medico se il dolore continuasse.", person:"io", tense:"condizionale presente", verb:"parlare", form:"parlerei", translation:"I would speak with the doctor if the pain continued." },
+  { sentence:"Avresti finito il corso se non fossi partito.", person:"tu", tense:"condizionale passato", verb:"finire", form:"avresti finito", translation:"You would have finished the course if you had not left." },
+  { sentence:"Sono stati molto chiari durante la spiegazione.", person:"loro", tense:"passato prossimo", verb:"essere", form:"sono stati", translation:"They were very clear during the explanation." },
+  { sentence:"State finendo la cena prima di uscire.", person:"voi", tense:"presente progressivo", verb:"finire", form:"state finendo", translation:"You all are finishing dinner before going out." }
 ];
 let imported = [];
 let current = null;
@@ -257,11 +307,85 @@ let attempts = 0;
 let correct = 0;
 let answered = false;
 let gotThisOne = false;
+let questionQueue = [];
+let retryQueue = [];
+let retryKeys = new Set();
+let currentSourceKey = "";
+let lastQuestionKey = "";
 const form = document.getElementById("quiz");
 const feedback = document.getElementById("feedback");
 const conjugationPanel = document.getElementById("conjugationPanel");
 const explainButton = document.getElementById("explain");
+const retryWrong = document.getElementById("retryWrong");
 function choice(list) { return list[Math.floor(Math.random() * list.length)]; }
+function questionKey(question) { return question.sentence + "|" + question.person + "|" + question.tense; }
+function shuffled(list) {
+  const copy = list.slice();
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
+}
+function activeQuestions() { return imported.length ? imported : curatedQuestions; }
+function activeSourceKey() { return imported.length ? "imported:" + imported.length : "curated:" + curatedQuestions.length; }
+function refillQuestionQueue(sourceList = activeQuestions()) {
+  questionQueue = shuffled(sourceList);
+  if (questionQueue.length > 1 && questionKey(questionQueue[0]) === lastQuestionKey) {
+    [questionQueue[0], questionQueue[1]] = [questionQueue[1], questionQueue[0]];
+  }
+}
+function resetRetryQueue() {
+  retryQueue = [];
+  retryKeys = new Set();
+}
+function resetQuestionQueue() {
+  currentSourceKey = activeSourceKey();
+  resetRetryQueue();
+  refillQuestionQueue();
+}
+function addRetryQuestion(question) {
+  if (!retryWrong.checked) return;
+  const key = questionKey(question);
+  if (retryKeys.has(key)) return;
+  retryKeys.add(key);
+  retryQueue.push(question);
+}
+function removeRetryQuestion(question) {
+  const key = questionKey(question);
+  if (!retryKeys.has(key)) return;
+  retryKeys.delete(key);
+  retryQueue = retryQueue.filter(item => questionKey(item) !== key);
+}
+function takeNextQuestion() {
+  const sourceKey = activeSourceKey();
+  if (sourceKey !== currentSourceKey) {
+    currentSourceKey = sourceKey;
+    resetRetryQueue();
+    refillQuestionQueue();
+  }
+  if (questionQueue.length === 0) {
+    if (retryWrong.checked && retryQueue.length) {
+      const retryList = retryQueue.slice();
+      resetRetryQueue();
+      refillQuestionQueue(retryList);
+    } else {
+      refillQuestionQueue();
+    }
+  }
+  const next = questionQueue.shift();
+  lastQuestionKey = questionKey(next);
+  return next;
+}
+function sentenceCountLabel() {
+  const newLeft = questionQueue.length;
+  const retryLeft = retryQueue.length;
+  if (retryWrong.checked && retryLeft) {
+    const retryText = retryLeft === 1 ? "1 retry" : retryLeft + " retries";
+    return newLeft + " new left · " + retryText;
+  }
+  return newLeft === 1 ? "1 sentence left" : newLeft + " sentences left";
+}
 function capitalize(text) { return text.charAt(0).toUpperCase() + text.slice(1); }
 function radios(list, name, target) { target.innerHTML = list.map(x => '<label><input type="radio" name="' + name + '" value="' + x + '"><span>' + x + '</span></label>').join(""); }
 function tenseRadios(target) {
@@ -411,9 +535,9 @@ function normalizeTense(value) {
 }
 function nextQuestion() {
   clearQuizUrl();
-  current = imported.length ? choice(imported) : (Math.random() < 0.35 ? choice(curatedQuestions) : makeLocalQuestion());
+  current = takeNextQuestion();
   sentence.textContent = current.sentence;
-  counter.textContent = imported.length ? "Random imported sentence" : "Random generated sentence";
+  counter.textContent = sentenceCountLabel();
   renderAnswerControls();
   answered = false;
   gotThisOne = false;
@@ -432,8 +556,11 @@ form.addEventListener("submit", event => {
   showConjugation();
   if (person === current.person && tense === current.tense) {
     if (!gotThisOne) { correct++; gotThisOne = true; }
+    removeRetryQuestion(current);
     show("correct", "Correct." + translationLine());
   } else {
+    addRetryQuestion(current);
+    counter.textContent = sentenceCountLabel();
     show("wrong", "Not quite. Correct answer: " + current.person + ", " + current.tense + "." + translationLine());
     explainButton.hidden = false;
   }
@@ -441,7 +568,7 @@ form.addEventListener("submit", event => {
 });
 explainButton.onclick = () => show("wrong", explainCurrent());
 next.onclick = () => { resetAnswerState(); nextQuestion(); };
-reset.onclick = () => { attempts = 0; correct = 0; updateScore(); nextQuestion(); };
+retryWrong.addEventListener("change", () => { resetRetryQueue(); counter.textContent = sentenceCountLabel(); });
 copyPrompt.onclick = async () => {
   const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. verb must be the infinitive, such as parlare, finire, dormire, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
   await navigator.clipboard.writeText(prompt);
@@ -460,6 +587,7 @@ importSentences.onclick = () => {
       return { sentence: sentenceText, person, tense, verb, form, translation: String(item.translation || "") };
     }).filter(item => item.sentence && people.includes(item.person) && tenses.includes(item.tense));
     if (!imported.length) throw new Error("No valid sentences found");
+    resetQuestionQueue();
     show("correct", "Imported " + imported.length + " ChatGPT sentences.");
     importBox.value = "";
     document.querySelector(".import-tools")?.removeAttribute("open");
@@ -469,10 +597,18 @@ importSentences.onclick = () => {
   }
 };
 versionStamp.textContent = "Version " + APP_VERSION;
+resetQuestionQueue();
 nextQuestion();
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
