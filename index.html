@@ -70,7 +70,7 @@
 <body>
 <main>
   <section>
-    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="review-link" href="review.html" target="_blank" rel="noopener" title="Review verb endings">Review verbs</a><div id="counter">50 sentences left</div></div></div>
+    <div class="top"><h1>Italian Verb Drill</h1><div class="top-actions"><a class="review-link" href="review.html" target="_blank" rel="noopener" title="Review verb endings">Review verbs</a><div id="counter">200 sentences left</div></div></div>
     <p id="sentence"></p>
     <details class="hint" id="hint">
       <summary>hint</summary>
@@ -107,7 +107,8 @@
   </aside>
 </main>
 <script>
-const APP_VERSION = "20260703_1635";
+const APP_VERSION = "20260705_1015";
+const BUILT_IN_QUESTION_COUNT = 200;
 const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
 const tenses = [
   "presente",
@@ -193,28 +194,88 @@ const verbContexts = {
     { it: "al telefono", en: "on the phone" },
     { it: "della lezione", en: "about the lesson" },
     { it: "con Maria dopo cena", en: "with Maria after dinner" },
-    { it: "lentamente", en: "slowly" }
+    { it: "lentamente", en: "slowly" },
+    { it: "con il vicino sul balcone", en: "with the neighbor on the balcony" },
+    { it: "del nuovo appartamento", en: "about the new apartment" },
+    { it: "con il medico per telefono", en: "with the doctor by phone" },
+    { it: "durante la pausa caff\u00e8", en: "during the coffee break" },
+    { it: "con l'impiegata alla posta", en: "with the clerk at the post office" },
+    { it: "della ricetta di famiglia", en: "about the family recipe" },
+    { it: "con calma dopo la riunione", en: "calmly after the meeting" },
+    { it: "con il meccanico in officina", en: "with the mechanic at the garage" },
+    { it: "del viaggio in Sicilia", en: "about the trip to Sicily" },
+    { it: "con i colleghi in cucina", en: "with the coworkers in the kitchen" },
+    { it: "a bassa voce in biblioteca", en: "quietly in the library" },
+    { it: "con la guida al museo", en: "with the guide at the museum" },
+    { it: "del tempo prima di uscire", en: "about the weather before going out" },
+    { it: "con il cameriere del conto", en: "with the waiter about the bill" },
+    { it: "con mia sorella del regalo", en: "with my sister about the gift" }
   ],
   finire: [
     { it: "i compiti", en: "the homework" },
     { it: "il libro", en: "the book" },
     { it: "il progetto", en: "the project" },
     { it: "la lezione", en: "the lesson" },
-    { it: "tutto prima di cena", en: "everything before dinner" }
+    { it: "tutto prima di cena", en: "everything before dinner" },
+    { it: "la spesa prima della chiusura", en: "the shopping before closing time" },
+    { it: "il modulo per il comune", en: "the form for city hall" },
+    { it: "la relazione per luned\u00ec", en: "the report for Monday" },
+    { it: "il caff\u00e8 prima del treno", en: "the coffee before the train" },
+    { it: "la valigia in camera", en: "the suitcase in the bedroom" },
+    { it: "gli esercizi di grammatica", en: "the grammar exercises" },
+    { it: "la prenotazione online", en: "the online reservation" },
+    { it: "il turno al negozio", en: "the shift at the shop" },
+    { it: "la lista per il mercato", en: "the list for the market" },
+    { it: "la cena senza fretta", en: "dinner without rushing" },
+    { it: "il corso prima dell'estate", en: "the course before summer" },
+    { it: "la presentazione in ufficio", en: "the presentation at the office" },
+    { it: "il trasloco entro domenica", en: "the move by Sunday" },
+    { it: "la telefonata con l'assicurazione", en: "the phone call with insurance" },
+    { it: "il film prima di mezzanotte", en: "the movie before midnight" }
   ],
   arrivare: [
     { it: "alla stazione", en: "at the station" },
     { it: "in ritardo", en: "late" },
     { it: "prima di cena", en: "before dinner" },
     { it: "con il treno", en: "by train" },
-    { it: "davanti al museo", en: "in front of the museum" }
+    { it: "davanti al museo", en: "in front of the museum" },
+    { it: "al mercato di quartiere", en: "at the neighborhood market" },
+    { it: "in tempo per la lezione", en: "in time for the lesson" },
+    { it: "dopo una lunga camminata", en: "after a long walk" },
+    { it: "alla fermata dell'autobus", en: "at the bus stop" },
+    { it: "sotto casa di Paolo", en: "outside Paolo's building" },
+    { it: "all'aeroporto senza problemi", en: "at the airport without problems" },
+    { it: "in piazza verso le otto", en: "in the square around eight" },
+    { it: "davanti alla farmacia", en: "in front of the pharmacy" },
+    { it: "con dieci minuti di anticipo", en: "ten minutes early" },
+    { it: "alla festa con gli amici", en: "at the party with friends" },
+    { it: "al ristorante dopo il lavoro", en: "at the restaurant after work" },
+    { it: "alla biglietteria del teatro", en: "at the theater ticket office" },
+    { it: "in centro con la metro", en: "downtown by subway" },
+    { it: "alla spiaggia nel pomeriggio", en: "at the beach in the afternoon" },
+    { it: "a casa prima della pioggia", en: "home before the rain" }
   ],
   dormire: [
     { it: "bene", en: "well" },
     { it: "poco", en: "a little" },
     { it: "fino a tardi", en: "until late" },
     { it: "in albergo", en: "at the hotel" },
-    { it: "per otto ore", en: "for eight hours" }
+    { it: "per otto ore", en: "for eight hours" },
+    { it: "sul divano del soggiorno", en: "on the living room sofa" },
+    { it: "con la finestra aperta", en: "with the window open" },
+    { it: "male per il rumore", en: "badly because of the noise" },
+    { it: "profondamente dopo il viaggio", en: "deeply after the trip" },
+    { it: "in una stanza tranquilla", en: "in a quiet room" },
+    { it: "solo poche ore", en: "only a few hours" },
+    { it: "durante il volo notturno", en: "during the night flight" },
+    { it: "senza svegliarsi", en: "without waking up" },
+    { it: "dai nonni nel weekend", en: "at the grandparents' on the weekend" },
+    { it: "con il telefono spento", en: "with the phone turned off" },
+    { it: "troppo tardi ieri sera", en: "too late last night" },
+    { it: "nella camera degli ospiti", en: "in the guest room" },
+    { it: "dopo una giornata pesante", en: "after a hard day" },
+    { it: "prima dell'esame importante", en: "before the important exam" },
+    { it: "con la coperta nuova", en: "with the new blanket" }
   ]
 };
 const adjectiveForms = {
@@ -222,7 +283,14 @@ const adjectiveForms = {
   stanco: { io:"stanco", tu:"stanco", "lui/lei":"stanco", noi:"stanchi", voi:"stanchi", loro:"stanchi" },
   felice: { io:"felice", tu:"felice", "lui/lei":"felice", noi:"felici", voi:"felici", loro:"felici" },
   "in ritardo": { io:"in ritardo", tu:"in ritardo", "lui/lei":"in ritardo", noi:"in ritardo", voi:"in ritardo", loro:"in ritardo" },
-  "molto gentile": { io:"molto gentile", tu:"molto gentile", "lui/lei":"molto gentile", noi:"molto gentili", voi:"molto gentili", loro:"molto gentili" }
+  "molto gentile": { io:"molto gentile", tu:"molto gentile", "lui/lei":"molto gentile", noi:"molto gentili", voi:"molto gentili", loro:"molto gentili" },
+  occupato: { io:"occupato", tu:"occupato", "lui/lei":"occupato", noi:"occupati", voi:"occupati", loro:"occupati" },
+  tranquillo: { io:"tranquillo", tu:"tranquillo", "lui/lei":"tranquillo", noi:"tranquilli", voi:"tranquilli", loro:"tranquilli" },
+  sicuro: { io:"sicuro", tu:"sicuro", "lui/lei":"sicuro", noi:"sicuri", voi:"sicuri", loro:"sicuri" },
+  contento: { io:"contento", tu:"contento", "lui/lei":"contento", noi:"contenti", voi:"contenti", loro:"contenti" },
+  "molto paziente": { io:"molto paziente", tu:"molto paziente", "lui/lei":"molto paziente", noi:"molto pazienti", voi:"molto pazienti", loro:"molto pazienti" },
+  disponibile: { io:"disponibile", tu:"disponibile", "lui/lei":"disponibile", noi:"disponibili", voi:"disponibili", loro:"disponibili" },
+  "un po' nervoso": { io:"un po' nervoso", tu:"un po' nervoso", "lui/lei":"un po' nervoso", noi:"un po' nervosi", voi:"un po' nervosi", loro:"un po' nervosi" }
 };
 const adjectives = Object.keys(adjectiveForms);
 const adjectiveMeanings = {
@@ -234,7 +302,21 @@ const adjectiveMeanings = {
   felici: "happy",
   "in ritardo": "late",
   "molto gentile": "very kind",
-  "molto gentili": "very kind"
+  "molto gentili": "very kind",
+  occupato: "busy",
+  occupati: "busy",
+  tranquillo: "calm",
+  tranquilli: "calm",
+  sicuro: "sure",
+  sicuri: "sure",
+  contento: "happy",
+  contenti: "happy",
+  "molto paziente": "very patient",
+  "molto pazienti": "very patient",
+  disponibile: "available",
+  disponibili: "available",
+  "un po' nervoso": "a little nervous",
+  "un po' nervosi": "a little nervous"
 };
 const verbMeanings = {
   parlare: "to speak",
@@ -359,12 +441,13 @@ function normalizeTargets(question) {
   })).filter(target => people.includes(target.person) && tenses.includes(target.tense));
 }
 function withTargets(question) { return { ...question, targets: normalizeTargets(question), targetIndex: 0 }; }
-function expandedQuestions() {
-  return (imported.length ? imported : curatedQuestions).flatMap(question => {
+function expandedQuestionsFrom(list) {
+  return list.flatMap(question => {
     const base = withTargets(question);
     return base.targets.map((target, index) => ({ ...base, targetIndex: index }));
   });
 }
+function expandedQuestions() { return imported.length ? expandedQuestionsFrom(imported) : builtInQuestions(); }
 function currentTarget() { return current?.targets?.[current.targetIndex || 0] || current || {}; }
 function questionKey(question) { const target = question.targets?.[question.targetIndex || 0] || question; return question.sentence + "|" + target.form + "|" + target.person + "|" + target.tense; }
 function shuffled(list) {
@@ -376,7 +459,7 @@ function shuffled(list) {
   return copy;
 }
 function activeQuestions() { return expandedQuestions(); }
-function activeSourceKey() { return imported.length ? "imported:" + imported.length : "curated:" + curatedQuestions.length; }
+function activeSourceKey() { return imported.length ? "imported:" + imported.length : "built-in:" + BUILT_IN_QUESTION_COUNT + ":" + curatedQuestions.length; }
 function refillQuestionQueue(sourceList = activeQuestions()) {
   questionQueue = shuffled(sourceList);
   if (questionQueue.length > 1 && questionKey(questionQueue[0]) === lastQuestionKey) {
@@ -573,6 +656,38 @@ function makeLocalQuestion() {
     extra = context.it;
   }
   return { sentence: capitalize(pair.form + " " + extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: makeTranslation(pair, extra, context) };
+}
+function makeQuestionFromPair(pair, variantIndex) {
+  let extra = "";
+  let context = null;
+  if (pair.verb === "essere") {
+    const adjectiveKey = adjectives[variantIndex % adjectives.length];
+    extra = adjectiveForms[adjectiveKey][pair.person];
+  } else {
+    const contexts = verbContexts[pair.verb] || [];
+    context = contexts[variantIndex % contexts.length];
+    extra = context?.it || "";
+  }
+  return { sentence: capitalize(pair.form + " " + extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: makeTranslation(pair, extra, context) };
+}
+function builtInQuestions() {
+  const questions = expandedQuestionsFrom(curatedQuestions);
+  const seen = new Set(questions.map(questionKey));
+  let variantIndex = 0;
+  while (questions.length < BUILT_IN_QUESTION_COUNT && variantIndex < BUILT_IN_QUESTION_COUNT * 8) {
+    for (const pair of shuffled(localPairs)) {
+      const question = withTargets(makeQuestionFromPair(pair, variantIndex));
+      const expanded = { ...question, targetIndex: 0 };
+      const key = questionKey(expanded);
+      if (!seen.has(key)) {
+        seen.add(key);
+        questions.push(expanded);
+        if (questions.length >= BUILT_IN_QUESTION_COUNT) break;
+      }
+    }
+    variantIndex += 1;
+  }
+  return questions.slice(0, BUILT_IN_QUESTION_COUNT);
 }
 function normalizePerson(value) {
   const v = String(value || "").toLowerCase().trim();
