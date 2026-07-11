@@ -107,7 +107,7 @@
   </aside>
 </main>
 <script>
-const APP_VERSION = "20260705_1015";
+const APP_VERSION = "20260711_1200";
 const BUILT_IN_QUESTION_COUNT = 200;
 const people = ["io", "tu", "lui/lei", "noi", "voi", "loro"];
 const tenses = [
@@ -271,7 +271,7 @@ const verbContexts = {
     { it: "senza svegliarsi", en: "without waking up" },
     { it: "dai nonni nel weekend", en: "at the grandparents' on the weekend" },
     { it: "con il telefono spento", en: "with the phone turned off" },
-    { it: "troppo tardi ieri sera", en: "too late last night" },
+    { it: "fino a molto tardi", en: "until very late" },
     { it: "nella camera degli ospiti", en: "in the guest room" },
     { it: "dopo una giornata pesante", en: "after a hard day" },
     { it: "prima dell'esame importante", en: "before the important exam" },
@@ -360,9 +360,9 @@ const curatedQuestions = [
   { sentence:"Stai parlando troppo veloce per me.", person:"tu", tense:"presente progressivo", verb:"parlare", form:"stai parlando", translation:"You are speaking too fast for me." },
   { sentence:"Ha parlato con il proprietario dell'appartamento ieri sera.", person:"lui/lei", tense:"passato prossimo", verb:"parlare", form:"ha parlato", translation:"He/she spoke with the apartment owner last night." },
   { sentence:"Parlavamo spesso di grammatica dopo la lezione.", person:"noi", tense:"imperfetto", verb:"parlare", form:"parlavamo", translation:"We often used to talk about grammar after class." },
-  { sentence:"Avevate parlato con l'insegnante prima dell'esame.", person:"voi", tense:"trapassato prossimo", verb:"parlare", form:"avevate parlato", translation:"You all had spoken with the teacher before the exam." },
+  { sentence:"Avevate parlato con l'insegnante prima che iniziasse l'esame.", person:"voi", tense:"trapassato prossimo", verb:"parlare", form:"avevate parlato", translation:"You all had spoken with the teacher before the exam began." },
   { sentence:"Parleranno con il direttore domani mattina.", person:"loro", tense:"futuro semplice", verb:"parlare", form:"parleranno", translation:"They will speak with the manager tomorrow morning." },
-  { sentence:"Avr\u00f2 parlato con tutti prima della riunione.", person:"io", tense:"futuro anteriore", verb:"parlare", form:"avr\u00f2 parlato", translation:"I will have spoken with everyone before the meeting." },
+  { sentence:"Avr\u00f2 parlato con tutti prima che inizi la riunione.", person:"io", tense:"futuro anteriore", verb:"parlare", form:"avr\u00f2 parlato", translation:"I will have spoken with everyone before the meeting begins." },
   { sentence:"Parleresti meglio se fossi meno nervoso.", person:"tu", tense:"condizionale presente", verb:"parlare", form:"parleresti", translation:"You would speak better if you were less nervous." },
   { sentence:"Avrebbe parlato con te, ma era gi\u00e0 tardi.", person:"lui/lei", tense:"condizionale passato", verb:"parlare", form:"avrebbe parlato", translation:"He/she would have spoken with you, but it was already late." },
   { sentence:"Parliamo con i vicini del rumore ogni settimana.", person:"noi", tense:"presente", verb:"parlare", form:"parliamo", translation:"We speak with the neighbors about the noise every week." },
@@ -373,42 +373,42 @@ const curatedQuestions = [
   { sentence:"Finivate sempre i compiti prima di cena.", person:"voi", tense:"imperfetto", verb:"finire", form:"finivate", translation:"You all always used to finish the homework before dinner." },
   { sentence:"Avevano finito la spesa quando \u00e8 iniziato a piovere.", person:"loro", tense:"trapassato prossimo", verb:"finire", form:"avevano finito", translation:"They had finished the shopping when it started to rain." },
   { sentence:"Finir\u00f2 il libro durante il viaggio in treno.", person:"io", tense:"futuro semplice", verb:"finire", form:"finir\u00f2", translation:"I will finish the book during the train trip." },
-  { sentence:"Avrai finito il turno prima delle sette.", person:"tu", tense:"futuro anteriore", verb:"finire", form:"avrai finito", translation:"You will have finished the shift before seven." },
+  { sentence:"Avrai finito il turno quando arriver\u00e0 il collega delle sette.", person:"tu", tense:"futuro anteriore", verb:"finire", form:"avrai finito", translation:"You will have finished the shift when the seven o'clock coworker arrives." },
   { sentence:"Finirebbe il progetto oggi se avesse pi\u00f9 tempo.", person:"lui/lei", tense:"condizionale presente", verb:"finire", form:"finirebbe", translation:"He/she would finish the project today if he/she had more time." },
   { sentence:"Avremmo finito prima, ma il computer si \u00e8 bloccato.", person:"noi", tense:"condizionale passato", verb:"finire", form:"avremmo finito", translation:"We would have finished earlier, but the computer froze." },
   { sentence:"Finite la presentazione prima che arrivino gli ospiti.", person:"voi", tense:"presente", verb:"finire", form:"finite", translation:"You all finish the presentation before the guests arrive." },
 
   { sentence:"Dormo poco quando bevo caff\u00e8 la sera.", person:"io", tense:"presente", verb:"dormire", form:"dormo", translation:"I sleep little when I drink coffee in the evening." },
   { sentence:"Stai dormendo sul divano con la televisione accesa.", person:"tu", tense:"presente progressivo", verb:"dormire", form:"stai dormendo", translation:"You are sleeping on the sofa with the television on." },
-  { sentence:"Ha dormito in albergo vicino alla stazione.", person:"lui/lei", tense:"passato prossimo", verb:"dormire", form:"ha dormito", translation:"He/she slept in a hotel near the station." },
+  { sentence:"Ha dormito in albergo vicino alla stazione ieri notte.", person:"lui/lei", tense:"passato prossimo", verb:"dormire", form:"ha dormito", translation:"He/she slept in a hotel near the station last night." },
   { sentence:"Dormivamo male quando faceva troppo caldo.", person:"noi", tense:"imperfetto", verb:"dormire", form:"dormivamo", translation:"We used to sleep badly when it was too hot." },
-  { sentence:"Avevate dormito solo tre ore prima dell'esame.", person:"voi", tense:"trapassato prossimo", verb:"dormire", form:"avevate dormito", translation:"You all had slept only three hours before the exam." },
+  { sentence:"Avevate dormito solo tre ore quando è iniziato l'esame.", person:"voi", tense:"trapassato prossimo", verb:"dormire", form:"avevate dormito", translation:"You all had slept only three hours when the exam began." },
   { sentence:"Dormiranno dai nonni durante il fine settimana.", person:"loro", tense:"futuro semplice", verb:"dormire", form:"dormiranno", translation:"They will sleep at their grandparents' during the weekend." },
-  { sentence:"Avr\u00f2 dormito abbastanza prima del viaggio lungo.", person:"io", tense:"futuro anteriore", verb:"dormire", form:"avr\u00f2 dormito", translation:"I will have slept enough before the long trip." },
+  { sentence:"Avr\u00f2 dormito abbastanza quando inizier\u00e0 il viaggio lungo.", person:"io", tense:"futuro anteriore", verb:"dormire", form:"avr\u00f2 dormito", translation:"I will have slept enough when the long trip begins." },
   { sentence:"Dormiresti meglio in una stanza pi\u00f9 silenziosa.", person:"tu", tense:"condizionale presente", verb:"dormire", form:"dormiresti", translation:"You would sleep better in a quieter room." },
   { sentence:"Avrebbe dormito ancora, ma la sveglia ha suonato.", person:"lui/lei", tense:"condizionale passato", verb:"dormire", form:"avrebbe dormito", translation:"He/she would have slept longer, but the alarm rang." },
   { sentence:"Dormiamo sempre con la finestra un po' aperta.", person:"noi", tense:"presente", verb:"dormire", form:"dormiamo", translation:"We always sleep with the window slightly open." },
 
   { sentence:"Sono pronto per parlare con l'impiegato del comune.", person:"io", tense:"presente", verb:"essere", form:"sono", translation:"I am ready to speak with the city office clerk." },
-  { sentence:"Sei stato molto paziente con il nuovo studente.", person:"tu", tense:"passato prossimo", verb:"essere", form:"sei stato", translation:"You were very patient with the new student." },
+  { sentence:"Sei stato molto paziente con il nuovo studente durante la lezione di ieri.", person:"tu", tense:"passato prossimo", verb:"essere", form:"sei stato", translation:"You were very patient with the new student during yesterday's lesson." },
   { sentence:"Era stanca dopo una giornata intera al lavoro.", person:"lui/lei", tense:"imperfetto", verb:"essere", form:"era", translation:"He/she was tired after a whole day at work." },
-  { sentence:"Eravamo stati in ritardo per colpa del traffico.", person:"noi", tense:"trapassato prossimo", verb:"essere", form:"eravamo stati", translation:"We had been late because of the traffic." },
+  { sentence:"Eravamo stati in ritardo la volta precedente, quindi quel giorno siamo partiti presto.", person:"noi", tense:"trapassato prossimo", verb:"essere", form:"eravamo stati", translation:"We had been late the previous time, so that day we left early." },
   { sentence:"Sarete pronti quando arriver\u00e0 il taxi.", translation:"You all will be ready when the taxi arrives.", targets:[
     { person:"voi", tense:"futuro semplice", verb:"essere", form:"sarete" },
     { person:"lui/lei", tense:"futuro semplice", verb:"arrivare", form:"arriver\u00e0" }
   ] },
-  { sentence:"Saranno stati felici di ricevere la notizia.", person:"loro", tense:"futuro anteriore", verb:"essere", form:"saranno stati", translation:"They will have been happy to receive the news." },
+  { sentence:"Saranno stati felici per ore quando torneremo a casa.", person:"loro", tense:"futuro anteriore", verb:"essere", form:"saranno stati", translation:"They will have been happy for hours when we return home." },
   { sentence:"Sarei pi\u00f9 tranquillo con una spiegazione chiara.", person:"io", tense:"condizionale presente", verb:"essere", form:"sarei", translation:"I would be calmer with a clear explanation." },
-  { sentence:"Saresti stato pi\u00f9 sicuro con un po' di pratica.", person:"tu", tense:"condizionale passato", verb:"essere", form:"saresti stato", translation:"You would have been more confident with a bit of practice." },
+  { sentence:"Saresti stato pi\u00f9 sicuro se avessi avuto un po' di pratica.", person:"tu", tense:"condizionale passato", verb:"essere", form:"saresti stato", translation:"You would have been more confident if you had had a bit of practice." },
   { sentence:"Siamo molto gentili con i nuovi vicini.", person:"noi", tense:"presente", verb:"essere", form:"siamo", translation:"We are very kind to the new neighbors." },
   { sentence:"Siete stati in biblioteca per studiare italiano.", person:"voi", tense:"passato prossimo", verb:"essere", form:"siete stati", translation:"You all were in the library to study Italian." },
 
   { sentence:"Sto parlando con l'assistenza perch\u00e9 il pacco non \u00e8 arrivato.", person:"io", tense:"presente progressivo", verb:"parlare", form:"sto parlando", translation:"I am speaking with customer support because the package has not arrived." },
   { sentence:"Hai finito la prenotazione prima di comprare i biglietti.", person:"tu", tense:"passato prossimo", verb:"finire", form:"hai finito", translation:"You finished the reservation before buying the tickets." },
   { sentence:"Dormiva profondamente quando \u00e8 arrivata la telefonata.", person:"lui/lei", tense:"imperfetto", verb:"dormire", form:"dormiva", translation:"He/she was sleeping deeply when the phone call arrived." },
-  { sentence:"Avevamo parlato del problema prima della riunione.", person:"noi", tense:"trapassato prossimo", verb:"parlare", form:"avevamo parlato", translation:"We had spoken about the problem before the meeting." },
+  { sentence:"Avevamo parlato del problema prima che iniziasse la riunione.", person:"noi", tense:"trapassato prossimo", verb:"parlare", form:"avevamo parlato", translation:"We had spoken about the problem before the meeting began." },
   { sentence:"Finirete il trasloco entro domenica sera.", person:"voi", tense:"futuro semplice", verb:"finire", form:"finirete", translation:"You all will finish the move by Sunday evening." },
-  { sentence:"Avranno dormito poco dopo il concerto.", person:"loro", tense:"futuro anteriore", verb:"dormire", form:"avranno dormito", translation:"They will have slept little after the concert." },
+  { sentence:"Avranno dormito poco quando partiranno per l'aeroporto.", person:"loro", tense:"futuro anteriore", verb:"dormire", form:"avranno dormito", translation:"They will have slept little when they leave for the airport." },
   { sentence:"Parlerei con il medico se il dolore continuasse.", person:"io", tense:"condizionale presente", verb:"parlare", form:"parlerei", translation:"I would speak with the doctor if the pain continued." },
   { sentence:"Avresti finito il corso se non fossi partito.", person:"tu", tense:"condizionale passato", verb:"finire", form:"avresti finito", translation:"You would have finished the course if you had not left." },
   { sentence:"Sono stati molto chiari durante la spiegazione.", person:"loro", tense:"passato prossimo", verb:"essere", form:"sono stati", translation:"They were very clear during the explanation." },
@@ -644,6 +644,59 @@ function makeTranslation(pair, extra, context) {
   const extraMeaning = pair.verb === "essere" ? (adjectiveMeanings[extra] || extra) : (context?.en || extra);
   return subject + " " + verbPhrase + " " + extraMeaning + ".";
 }
+const trapassatoReferenceEvents = {
+  parlare: { it: "prima che iniziasse la riunione", en: "before the meeting began" },
+  finire: { it: "quando è arrivato il responsabile", en: "when the supervisor arrived" },
+  dormire: { it: "prima che suonasse la sveglia", en: "before the alarm rang" },
+  arrivare: { it: "quando hanno aperto le porte", en: "when they opened the doors" },
+  essere: { it: "prima che la situazione cambiasse", en: "before the situation changed" }
+};
+const futuroAnterioreReferenceEvents = {
+  parlare: { it: "prima che inizi la riunione", en: "before the meeting begins" },
+  finire: { it: "quando arriverà il responsabile", en: "when the supervisor arrives" },
+  dormire: { it: "prima che suoni la sveglia", en: "before the alarm rings" },
+  arrivare: { it: "quando apriranno le porte", en: "when they open the doors" },
+  essere: { it: "prima che la situazione cambi", en: "before the situation changes" }
+};
+const condizionalePassatoContexts = {
+  parlare: { it: ", ma la riunione è stata annullata", en: ", but the meeting was canceled" },
+  finire: { it: ", ma il computer si è bloccato", en: ", but the computer froze" },
+  dormire: { it: ", ma la sveglia ha suonato", en: ", but the alarm rang" },
+  arrivare: { it: ", ma il treno è stato cancellato", en: ", but the train was canceled" },
+  essere: { it: ", ma la situazione è cambiata", en: ", but the situation changed" }
+};
+const basicTenseContexts = {
+  presente: {
+    parlare: { it: "ogni settimana", en: "every week" },
+    finire: { it: "di solito", en: "usually" },
+    dormire: { it: "ogni notte", en: "every night" },
+    arrivare: { it: "ogni settimana", en: "every week" },
+    essere: { it: "oggi", en: "today" }
+  },
+  "presente progressivo": { default: { it: "proprio adesso", en: "right now" } },
+  "passato prossimo": { default: { it: "ieri", en: "yesterday" } },
+  imperfetto: { default: { it: "in quel periodo", en: "during that period" } },
+  "futuro semplice": { default: { it: "domani", en: "tomorrow" } },
+  "condizionale presente": { default: { it: ", se fosse possibile", en: ", if it were possible" } }
+};
+function addTenseContext(pair, extra, translation) {
+  const referenceEvents = pair.tense === "trapassato prossimo"
+    ? trapassatoReferenceEvents
+    : pair.tense === "futuro anteriore"
+      ? futuroAnterioreReferenceEvents
+      : pair.tense === "condizionale passato"
+        ? condizionalePassatoContexts
+        : basicTenseContexts[pair.tense];
+  if (!referenceEvents) return { extra, translation };
+  const reference = referenceEvents[pair.verb] || referenceEvents.default;
+  if (!reference) return { extra, translation };
+  const italianSeparator = reference.it.startsWith(",") ? "" : " ";
+  const englishSeparator = reference.en.startsWith(",") ? "" : " ";
+  return {
+    extra: extra + italianSeparator + reference.it,
+    translation: translation.replace(/\.$/, "") + englishSeparator + reference.en + "."
+  };
+}
 function makeLocalQuestion() {
   const pair = choice(localPairs);
   let extra = "";
@@ -655,7 +708,8 @@ function makeLocalQuestion() {
     context = choice(verbContexts[pair.verb]);
     extra = context.it;
   }
-  return { sentence: capitalize(pair.form + " " + extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: makeTranslation(pair, extra, context) };
+  const contextualized = addTenseContext(pair, extra, makeTranslation(pair, extra, context));
+  return { sentence: capitalize(pair.form + " " + contextualized.extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: contextualized.translation };
 }
 function makeQuestionFromPair(pair, variantIndex) {
   let extra = "";
@@ -668,7 +722,8 @@ function makeQuestionFromPair(pair, variantIndex) {
     context = contexts[variantIndex % contexts.length];
     extra = context?.it || "";
   }
-  return { sentence: capitalize(pair.form + " " + extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: makeTranslation(pair, extra, context) };
+  const contextualized = addTenseContext(pair, extra, makeTranslation(pair, extra, context));
+  return { sentence: capitalize(pair.form + " " + contextualized.extra + "."), person: pair.person, tense: pair.tense, verb: pair.verb, form: pair.form, translation: contextualized.translation };
 }
 function builtInQuestions() {
   const questions = expandedQuestionsFrom(curatedQuestions);
@@ -763,7 +818,7 @@ explainButton.onclick = () => show("wrong", explainCurrent());
 next.onclick = () => { resetAnswerState(); nextQuestion(); };
 retryWrong.addEventListener("change", () => { resetRetryQueue(); counter.textContent = sentenceCountLabel(); });
 copyPrompt.onclick = async () => {
-  const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. If a sentence has multiple useful finite verbs, also include targets as an array of objects with form, person, tense, and verb for each quiz-worthy verb. verb must be the infinitive, such as parlare, finire, dormire, arrivare, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
+  const prompt = 'Create 30 short Italian practice sentences as JSON only. Each item must have sentence, person, tense, verb, and translation. If a sentence has multiple useful finite verbs, also include targets as an array of objects with form, person, tense, and verb for each quiz-worthy verb. verb must be the infinitive, such as parlare, finire, dormire, arrivare, or essere. Do not include explicit subject pronouns like io, tu, lui, lei, noi, voi, or loro in the Italian sentence. The person should be inferable from the verb form. Avoid ambiguous forms where two people have the same conjugation. Give every sentence natural context that helps the learner infer its tense: a routine or current fact for presente, an action happening right now for presente progressivo, a completed past occasion for passato prossimo, a repeated or background past situation for imperfetto, a stated future occasion for futuro semplice, and an unreal condition for condizionale presente. Every trapassato prossimo sentence must explicitly state both the earlier completed action and a later past event, using a clause such as quando è arrivato... or prima che iniziasse...; a bare time phrase such as prima dell’esame is not enough. Every futuro anteriore sentence must likewise state the future event by which the action will already be complete, using a clause such as quando arriverà... or prima che inizi...; a bare deadline such as prima delle sette is not enough. Every condizionale passato sentence must include the unreal past condition or obstacle that explains why the action did not happen, using a clause such as se avessi avuto... or ma il computer si è bloccato; an isolated sentence such as Avresti finito i compiti is not enough. person must be one of: io, tu, lui/lei, noi, voi, loro. tense must be one of: presente, presente progressivo, passato prossimo, imperfetto, trapassato prossimo, futuro semplice, futuro anteriore, condizionale presente, condizionale passato. Use varied common verbs and natural beginner/intermediate sentences.';
   await navigator.clipboard.writeText(prompt);
   show("correct", "Prompt copied. Paste it into ChatGPT, then paste the JSON result into the import box.");
 };
