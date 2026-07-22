@@ -1,0 +1,76 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Italian Modal Verbs Quiz</title><link rel="stylesheet" href="quiz.css"></head><body><main class="shell"><div class="topbar"><div><h1>Modal verbs: dovere, potere, volere</h1><p class="subtitle">Practice meaning and conjugation from the present through the conditional past.</p></div><a class="back" href="index.html">← All quizzes</a></div><section class="card" id="quizApp"></section><div class="version">Version 20260721_2115</div></main><script src="quiz-engine.js"></script><script>
+const modalQuestions=[
+{prompt:'Oggi non ___ uscire: devo finire il lavoro.',context:'Present · potere · io',options:['posso','puoi','potrò','potevo'],answer:0,explanation:'The present first-person singular of potere is posso.'},
+{prompt:'Da bambino ___ restare sveglio fino a tardi.',context:'Imperfect · potere · io',options:['ho potuto','potevo','potrei','potrò'],answer:1,explanation:'The imperfect describes a past ability or ongoing permission: potevo.'},
+{prompt:'Ieri ___ finire il progetto nonostante il rumore.',context:'Passato prossimo · potere · io',options:['potevo','ho potuto','sono potuto','avrei potuto'],answer:1,explanation:'A completed successful action calls for passato prossimo: ho potuto finire.'},
+{prompt:'Domani ___ accompagnarti alla stazione.',context:'Future · potere · io',options:['posso','potrei','potrò','avrò potuto'],answer:2,explanation:'The future of potere uses the stem potr-: potrò.'},
+{prompt:'Con più tempo, ___ aiutarti meglio.',context:'Present conditional · potere · io',options:['potrò','potevo','potrei','avrei potuto'],answer:2,explanation:'Potrei expresses what I could do under a present condition.'},
+{prompt:'Con più tempo ieri, ___ aiutarti.',context:'Past conditional · potere · io',options:['potrei','potevo','avrei potuto','avrò potuto'],answer:2,explanation:'Avrei potuto + infinitive means “I could have.”'},
+{prompt:'Ogni mattina ___ prendere l\'autobus alle sette.',context:'Present · dovere · noi',options:['dobbiamo','dovevamo','dovremo','dovremmo'],answer:0,explanation:'The present noi form is dobbiamo.'},
+{prompt:'Quando vivevamo lontano, ___ alzarci prestissimo.',context:'Imperfect · dovere · noi',options:['abbiamo dovuto','dovevamo','dovremo','avremmo dovuto'],answer:1,explanation:'A repeated past obligation uses the imperfect: dovevamo.'},
+{prompt:'Stamattina ___ chiamare il medico.',context:'Passato prossimo · dovere · lei',options:['doveva','ha dovuto','è dovuta','avrebbe dovuto'],answer:1,explanation:'With a following transitive infinitive, avere is standard: ha dovuto chiamare.'},
+{prompt:'Entro venerdì ___ consegnare tutto.',context:'Future · dovere · voi',options:['dovete','dovevate','dovrete','dovreste'],answer:2,explanation:'The future voi form is dovrete.'},
+{prompt:'Per stare meglio, ___ dormire di più.',context:'Present conditional · dovere · tu',options:['dovrai','dovevi','dovresti','avresti dovuto'],answer:2,explanation:'Dovresti gives advice: “you should.”'},
+{prompt:'___ avvisarmi, ma te ne sei dimenticato.',context:'Past conditional · dovere · tu',options:['Dovresti','Dovevi','Avresti dovuto','Dovrai'],answer:2,explanation:'Avresti dovuto means “you should have” and marks an unfulfilled past duty.'},
+{prompt:'Marta ___ imparare il giapponese.',context:'Present · volere · lei',options:['vuole','voleva','vorrà','vorrebbe'],answer:0,explanation:'The present third-person singular of volere is vuole.'},
+{prompt:'Da giovane ___ diventare architetto.',context:'Imperfect · volere · lui',options:['ha voluto','voleva','vorrebbe','avrebbe voluto'],answer:1,explanation:'The imperfect presents an ongoing wish in the past: voleva.'},
+{prompt:'Alla fine loro non ___ partecipare.',context:'Passato prossimo · volere · loro',options:['volevano','hanno voluto','vorranno','avrebbero voluto'],answer:1,explanation:'A definite past decision uses hanno voluto.'},
+{prompt:'Dopo l\'università ___ lavorare all\'estero.',context:'Future · volere · loro',options:['vogliono','volevano','vorranno','vorrebbero'],answer:2,explanation:'The future stem of volere is vorr-: vorranno.'},
+{prompt:'___ un caffè, per favore.',context:'Present conditional · volere · io',options:['Voglio','Vorrò','Vorrei','Avrei voluto'],answer:2,explanation:'Vorrei is the conventional polite form for a request.'},
+{prompt:'___ salutarti, ma il treno è partito.',context:'Past conditional · volere · io',options:['Volevo','Vorrei','Avrei voluto','Avrò voluto'],answer:2,explanation:'Avrei voluto + infinitive expresses an unrealized past wish.'},
+{prompt:'Quando arriverai, noi ___ già partire.',context:'Future perfect · dovere · noi',options:['dovremo','avremo dovuto','avremmo dovuto','abbiamo dovuto'],answer:1,explanation:'By a future point, the completed necessity is futuro anteriore: avremo dovuto.'},
+{prompt:'Prima dell\'esame, lei ___ studiare tutta la notte.',context:'Pluperfect · dovere · lei',options:['aveva dovuto','ha dovuto','avrebbe dovuto','doveva'],answer:0,explanation:'Aveva dovuto is trapassato prossimo: an obligation completed before another past point.'},
+{prompt:'Se il museo fosse stato aperto, ___ visitarlo.',context:'Past conditional · potere · noi',options:['potremmo','potevamo','avremmo potuto','avremo potuto'],answer:2,explanation:'The unreal past condition requires avremmo potuto.'},
+{prompt:'Se avessero saputo della festa, ___ venire.',context:'Past conditional · volere · loro',options:['vorrebbero','volevano','avrebbero voluto','avranno voluto'],answer:2,explanation:'Avrebbero voluto means “they would have wanted.”'},
+{prompt:'A quest\'ora Marco ___ essere già arrivato.',context:'Present conditional used as conjecture · dovere',options:['deve','doveva','dovrebbe','avrebbe dovuto'],answer:2,explanation:'Dovrebbe essere arrivato expresses a present supposition: “he should have arrived by now.”'},
+{prompt:'Non ___ entrare senza biglietto.',context:'Present · potere · voi',options:['potete','potrete','potreste','potevate'],answer:0,explanation:'Potete is the present voi form; here it states a current rule.'}
+];
+const modalTranslations=[
+  'Today I cannot go out: I have to finish the work.',
+  'As a child, I could stay awake until late.',
+  'Yesterday I managed to finish the project despite the noise.',
+  'Tomorrow I will be able to accompany you to the station.',
+  'With more time, I could help you better.',
+  'With more time yesterday, I could have helped you.',
+  'Every morning we have to take the bus at seven.',
+  'When we lived far away, we had to get up very early.',
+  'This morning she had to call the doctor.',
+  'By Friday you will have to deliver everything.',
+  'To feel better, you should sleep more.',
+  'You should have told me, but you forgot.',
+  'Marta wants to learn Japanese.',
+  'When he was young, he wanted to become an architect.',
+  'In the end, they did not want to participate.',
+  'After university they will want to work abroad.',
+  'I would like a coffee, please.',
+  'I would have liked to say goodbye to you, but the train left.',
+  'When you arrive, we will already have had to leave.',
+  'Before the exam, she had had to study all night.',
+  'If the museum had been open, we could have visited it.',
+  'If they had known about the party, they would have wanted to come.',
+  'By now Marco should have already arrived.',
+  'You cannot enter without a ticket.'
+];
+modalQuestions.forEach((question,index)=>question.translation=modalTranslations[index]);
+const simpleModalForms={
+  potere:{presente:['posso','puoi','può','possiamo','potete','possono'],imperfetto:['potevo','potevi','poteva','potevamo','potevate','potevano'],'futuro semplice':['potrò','potrai','potrà','potremo','potrete','potranno'],'condizionale presente':['potrei','potresti','potrebbe','potremmo','potreste','potrebbero']},
+  dovere:{presente:['devo','devi','deve','dobbiamo','dovete','devono'],imperfetto:['dovevo','dovevi','doveva','dovevamo','dovevate','dovevano'],'futuro semplice':['dovrò','dovrai','dovrà','dovremo','dovrete','dovranno'],'condizionale presente':['dovrei','dovresti','dovrebbe','dovremmo','dovreste','dovrebbero']},
+  volere:{presente:['voglio','vuoi','vuole','vogliamo','volete','vogliono'],imperfetto:['volevo','volevi','voleva','volevamo','volevate','volevano'],'futuro semplice':['vorrò','vorrai','vorrà','vorremo','vorrete','vorranno'],'condizionale presente':['vorrei','vorresti','vorrebbe','vorremmo','vorreste','vorrebbero']}
+};
+const auxiliaryForms={
+  'passato prossimo':['ho','hai','ha','abbiamo','avete','hanno'],
+  'trapassato prossimo':['avevo','avevi','aveva','avevamo','avevate','avevano'],
+  'futuro anteriore':['avrò','avrai','avrà','avremo','avrete','avranno'],
+  'condizionale passato':['avrei','avresti','avrebbe','avremmo','avreste','avrebbero']
+};
+const participles={potere:'potuto',dovere:'dovuto',volere:'voluto'};
+const modalTargets=[
+  ['potere','presente'],['potere','imperfetto'],['potere','passato prossimo'],['potere','futuro semplice'],['potere','condizionale presente'],['potere','condizionale passato'],
+  ['dovere','presente'],['dovere','imperfetto'],['dovere','passato prossimo'],['dovere','futuro semplice'],['dovere','condizionale presente'],['dovere','condizionale passato'],
+  ['volere','presente'],['volere','imperfetto'],['volere','passato prossimo'],['volere','futuro semplice'],['volere','condizionale presente'],['volere','condizionale passato'],
+  ['dovere','futuro anteriore'],['dovere','trapassato prossimo'],['potere','condizionale passato'],['volere','condizionale passato'],['dovere','condizionale presente'],['potere','presente']
+];
+const modalPersonIndexes=[0,0,0,0,0,0,3,3,2,4,1,1,2,2,5,5,0,0,3,2,3,5,2,4];
+modalQuestions.forEach((question,index)=>{const [verb,tense]=modalTargets[index];const forms=auxiliaryForms[tense]?auxiliaryForms[tense].map(auxiliary=>`${auxiliary} ${participles[verb]}`):simpleModalForms[verb][tense];question.conjugation={title:`${verb} — ${tense}`,forms,correctIndex:modalPersonIndexes[index]}});
+startQuiz({questions:modalQuestions});
+</script></body></html>

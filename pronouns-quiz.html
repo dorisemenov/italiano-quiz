@@ -1,0 +1,57 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Italian Direct & Indirect Pronouns Quiz</title><link rel="stylesheet" href="quiz.css"></head><body><main class="shell"><div class="topbar"><div><h1>Direct & indirect pronouns</h1><p class="subtitle">Identify the object, then choose the natural Italian pronoun.</p></div><div class="top-actions"><button class="primary" type="button" id="openGuide">Review pronouns</button><a class="back" href="index.html">← All quizzes</a></div></div><div class="guide-overlay" id="studyGuide" role="dialog" aria-modal="true" aria-labelledby="guideTitle" hidden><div class="study-dialog"><div class="guide-inner"><div class="guide-head"><h2 id="guideTitle">Italian object pronouns</h2><button class="close-guide" type="button" id="closeGuide" aria-label="Close review guide">×</button></div><table class="guide-table"><thead><tr><th>Person / number</th><th>Direct object</th><th>Indirect object</th></tr></thead><tbody><tr><td>io — me</td><td>mi</td><td>mi</td></tr><tr><td>tu — you</td><td>ti</td><td>ti</td></tr><tr><td>lui — him</td><td>lo</td><td>gli</td></tr><tr><td>lei — her</td><td>la</td><td>le</td></tr><tr><td>noi — us</td><td>ci</td><td>ci</td></tr><tr><td>voi — you all</td><td>vi</td><td>vi</td></tr><tr><td>loro — them</td><td>li / le</td><td>gli</td></tr></tbody></table><p class="guide-note"><strong>Direct objects</strong> answer “whom?” or “what?” without <em>a</em>. <strong>Indirect objects</strong> usually answer “to whom?” and are introduced by <em>a</em>.</p><p class="guide-note"><strong>Placement:</strong> the pronoun normally comes before the conjugated verb: <em>La vedo</em>, <em>Gli telefono</em>, <em>Le scrivo</em>.</p></div></div></div><section class="card" id="quizApp"></section><div class="version">Version 20260721_2015</div></main><script src="quiz-engine.js"></script><script>
+const pronounQuestions=[
+{prompt:'Vedo Maria ogni mattina. ___ saluto sempre.',context:'Replace “Maria” with a direct object pronoun.',options:['La','Le','Lo','Gli'],answer:0,explanation:'Maria is feminine singular and receives the action directly, so use la.'},
+{prompt:'Telefono a Marco stasera. ___ racconto tutto.',context:'Replace “a Marco” with an indirect object pronoun.',options:['Lo','Gli','Le','Li'],answer:1,explanation:'Raccontare qualcosa a qualcuno takes an indirect object; a Marco becomes gli.'},
+{prompt:'Hai comprato i biglietti? Sì, ___ ho comprati ieri.',context:'Replace “i biglietti.”',options:['gli','li','le','lo'],answer:1,explanation:'I biglietti is masculine plural and direct, so use li. The participle agrees: comprati.'},
+{prompt:'Scrivo una lettera a Giulia. ___ scrivo una lettera.',context:'Replace only “a Giulia.”',options:['La','Le','Gli','Lo'],answer:1,explanation:'A Giulia is feminine singular and indirect, so use le.'},
+{prompt:'Conosci Paolo e Luca? Sì, ___ conosco bene.',context:'Replace “Paolo e Luca.”',options:['gli','li','le','loro'],answer:1,explanation:'They are masculine plural direct objects, so the pronoun is li.'},
+{prompt:'Porto il caffè a mia madre. ___ porto il caffè subito.',context:'Replace only “a mia madre.”',options:['La','Le','Lo','Gli'],answer:1,explanation:'A mia madre is an indirect object, so use le.'},
+{prompt:'Mi presti la penna? Sì, ___ presto volentieri.',context:'Replace only “la penna.”',options:['la','le','lo','gli'],answer:0,explanation:'La penna is a feminine singular direct object, so use la.'},
+{prompt:'Il professore spiega la regola agli studenti. ___ spiega la regola lentamente.',context:'Replace only “agli studenti.”',options:['Li','Gli','Le','Lo'],answer:1,explanation:'Agli studenti is an indirect object; modern standard Italian uses gli.'},
+{prompt:'Non trovo le chiavi. Non ___ trovo da nessuna parte.',context:'Replace “le chiavi.”',options:['gli','le','la','li'],answer:1,explanation:'Le chiavi is a feminine plural direct object, so use le.'},
+{prompt:'A noi piace molto questo ristorante. ___ piace molto.',context:'Replace “a noi.”',options:['Ci','Ce','Noi','Ne'],answer:0,explanation:'With piacere, the person experiencing the feeling is indirect; a noi becomes ci.'},
+{prompt:'Hai dato il documento a me? Sì, ___ hai dato il documento.',context:'Replace only “a me.”',options:['mi','me','lo','gli'],answer:0,explanation:'A me is an indirect object, so use mi before the conjugated verb.'},
+{prompt:'Inviti Sara alla festa? Sì, ___ invito.',context:'Replace “Sara.”',options:['le','la','gli','li'],answer:1,explanation:'Invitare takes a direct object; Sara becomes la.'},
+{prompt:'Che cosa dici ai tuoi genitori? ___ dico la verità.',context:'Replace “ai tuoi genitori.”',options:['Li','Gli','Le','Lo'],answer:1,explanation:'Dire qualcosa a qualcuno takes an indirect object; modern standard Italian uses gli for a loro.'},
+{prompt:'Chi prepara la cena per voi? Marta ___ prepara la cena.',context:'Replace only “per voi.”',options:['vi','voi','li','gli'],answer:0,explanation:'The recipients are voi, so the indirect pronoun is vi.'},
+{prompt:'Hai visto Anna? Sì, ___ ho vista in centro.',context:'Replace “Anna.”',options:['le','la','l\'','gli'],answer:2,explanation:'Before ho, la elides to l’. The participle may agree: l’ho vista.'},
+{prompt:'Il nonno racconta una storia ai bambini. ___ racconta una storia prima di dormire.',context:'Replace only “ai bambini.”',options:['Li','Gli','Le','Lo'],answer:1,explanation:'Ai bambini is an indirect object, so use gli.'},
+{prompt:'Puoi mandare <u>le foto</u> a noi domani? ___ puoi mandare a noi domani?',context:'Replace only the underlined words: “le foto.” Keep “a noi” in the sentence.',options:['Le','Ci','Gli','Li'],answer:0,explanation:'Le foto is the underlined target. It is a feminine plural direct object, so use le.'},
+{prompt:'Non voglio dire il segreto a te. Non ___ voglio dire.',context:'Replace only “a te.”',options:['ti','te','lo','gli'],answer:0,explanation:'A te is an indirect object, so use ti before the modal verb.'},
+{prompt:'Quanti libri compri? ___ compro due.',context:'Replace an amount introduced by “di.”',options:['Li','Ne','Gli','Ci'],answer:1,explanation:'Ne replaces di + noun or an unspecified quantity: ne compro due.'},
+{prompt:'Vai spesso a Roma? Sì, ___ vado ogni estate.',context:'Replace the place “a Roma.”',options:['ne','la','ci','le'],answer:2,explanation:'Ci can replace a place introduced by a: ci vado.'}
+];
+const pronounHints=[
+  'Direct object: replace the person or thing that receives the action directly.',
+  'Indirect object: replace the person who receives something or is spoken to.',
+  'Direct object: replace the thing bought.',
+  'Indirect object: replace the person introduced by “a.”',
+  'Direct object: replace the people known.',
+  'Indirect object: replace only the recipient introduced by “a.”',
+  'Direct object: replace only the thing being lent.',
+  'Indirect object: replace only the recipients introduced by “a.”',
+  'Direct object: replace the thing being searched for.',
+  'Indirect object: with piacere, replace the person experiencing the feeling.',
+  'Indirect object: replace only the recipient introduced by “a.”',
+  'Direct object: invitare takes the person invited directly, without “a.”',
+  'Indirect object: replace the people introduced by “a.”',
+  'Indirect object: replace only the people receiving the action.',
+  'Direct object: replace the person seen.',
+  'Indirect object: replace only the recipients introduced by “a.”',
+  'Direct object: replace only the things being sent.',
+  'Indirect object: replace only the recipient introduced by “a.”',
+  'Partitive pronoun: replace “di + noun” or an amount. This uses ne.',
+  'Place pronoun: replace a destination introduced by “a.” This uses ci.'
+];
+pronounQuestions.forEach((question,index)=>question.hint=pronounHints[index]);
+startQuiz({questions:pronounQuestions});
+const studyGuide=document.getElementById('studyGuide');
+const openGuide=document.getElementById('openGuide');
+const closeGuide=document.getElementById('closeGuide');
+function showGuide(){studyGuide.hidden=false;document.body.classList.add('guide-open');closeGuide.focus()}
+function hideGuide(){studyGuide.hidden=true;document.body.classList.remove('guide-open');openGuide.focus()}
+openGuide.addEventListener('click',showGuide);
+closeGuide.addEventListener('click',hideGuide);
+studyGuide.addEventListener('click',event=>{if(event.target===studyGuide)hideGuide()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!studyGuide.hidden)hideGuide()});
+</script></body></html>
