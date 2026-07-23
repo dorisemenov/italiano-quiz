@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Italian Connecting Words Match</title>
+  <link rel="stylesheet" href="quiz.css">
+  <style>
+    .match-shell{width:min(1180px,100%);margin:auto}.match-card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 50px #0002;padding:clamp(16px,2.5vw,28px)}
+    .round-line{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-weight:800;margin-bottom:16px}.board{display:grid;grid-template-columns:minmax(190px,.65fr) minmax(420px,1.7fr);gap:18px;align-items:start}
+    .bank,.sentences{border:1px solid var(--line);border-radius:10px;background:#f8faf8;padding:12px}.bank h2,.sentences h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+    .word-list{display:grid;gap:9px;min-height:280px}.word-card{display:flex;align-items:center;justify-content:center;min-height:48px;padding:9px 12px;border:1px solid #9ebcb1;border-radius:9px;background:#fff;color:var(--dark);font-weight:900;cursor:grab;box-shadow:0 4px 10px #0001;animation:slideIn .2s ease-out}
+    .word-card:hover,.word-card.selected{border-color:var(--accent);background:#e9f6f2;transform:translateX(3px)}.word-card:active{cursor:grabbing}.empty-note{color:var(--muted);text-align:center;padding:22px 8px}
+    .sentence-list{display:grid;gap:10px}.sentence-row{border:1px solid var(--line);border-radius:9px;background:#fff;padding:12px}.sentence-text{font:1.12rem/1.35 Georgia,serif;margin:0 0 8px}
+    .drop-slot{min-height:48px;border:2px dashed #aac3b9;border-radius:8px;display:grid;place-items:center;color:var(--muted);cursor:pointer;padding:5px;transition:.16s}.drop-slot.over{border-color:var(--accent);background:#e9f6f2}.drop-slot.correct{border-style:solid;border-color:#78bd91;background:var(--soft-good)}.drop-slot.wrong{border-style:solid;border-color:#d99088;background:var(--soft-bad)}
+    .drop-slot .word-card{width:100%;min-height:36px;cursor:pointer}.translation{margin:7px 0 0;color:var(--muted);font-size:.88rem}.correction{display:block;margin-top:6px;color:var(--bad);font-weight:800}
+    .match-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.round-feedback{margin-top:12px;font-weight:800}.round-feedback.good{color:var(--good)}.round-feedback.bad{color:var(--bad)}
+    @keyframes slideIn{from{opacity:.35;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}@media(max-width:760px){.board{grid-template-columns:1fr}.word-list{grid-template-columns:repeat(2,minmax(0,1fr));min-height:0}.word-card:hover{transform:none}}@media(max-width:430px){.word-list{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main class="match-shell">
+  <div class="topbar"><div><h1>Connecting words</h1><p class="subtitle">Drag each word to the sentence it completes—or tap a word, then tap a slot.</p></div><a class="back" href="index.html">← All quizzes</a></div>
+  <section class="match-card">
+    <div class="round-line"><span id="roundLabel"></span><span id="scoreLabel">0 correct</span></div>
+    <div class="board">
+      <section class="bank" aria-labelledby="bankTitle"><h2 id="bankTitle">Words to place</h2><div class="word-list" id="wordBank"></div></section>
+      <section class="sentences" aria-labelledby="sentenceTitle"><h2 id="sentenceTitle">Complete the sentences</h2><div class="sentence-list" id="sentenceList"></div></section>
+    </div>
+    <div class="match-actions"><button class="primary" id="checkRound" type="button">Check matches</button><button id="resetRound" type="button">Reset round</button><button id="nextRound" type="button" hidden>Next round</button></div>
+    <div id="roundFeedback" class="round-feedback" aria-live="polite"></div>
+  </section>
+  <div class="version">Version 20260723_1200</div>
+</main>
+<script>
+const rounds=[
+[
+ {word:'di solito',sentence:'___ faccio colazione alle sette.',translation:'I usually have breakfast at seven.',note:'a habitual action'},
+ {word:'all’improvviso',sentence:'___, tutte le luci si sono spente.',translation:'Suddenly, all the lights went out.',note:'an unexpected event'},
+ {word:'mentre',sentence:'Ascoltavo un podcast ___ preparavo la cena.',translation:'I was listening to a podcast while I prepared dinner.',note:'two actions happening at the same time'},
+ {word:'quando',sentence:'Ti chiamerò ___ arriverò a casa.',translation:'I will call you when I get home.',note:'the time at which something happens'},
+ {word:'però',sentence:'Il ristorante era caro; ___, il cibo era ottimo.',translation:'The restaurant was expensive; however, the food was excellent.',note:'a contrast'}
+],
+[
+ {word:'quindi',sentence:'Pioveva molto, ___ siamo rimasti a casa.',translation:'It was raining heavily, so we stayed home.',note:'a result or consequence'},
+ {word:'inoltre',sentence:'Il corso è utile; ___, è completamente gratuito.',translation:'The course is useful; moreover, it is completely free.',note:'additional information'},
+ {word:'prima',sentence:'Lavati le mani ___ di mangiare.',translation:'Wash your hands before eating.',note:'an earlier action'},
+ {word:'dopo',sentence:'Siamo usciti ___ aver finito il lavoro.',translation:'We went out after finishing the work.',note:'a later action'},
+ {word:'appena',sentence:'Ti scrivo ___ so qualcosa.',translation:'I’ll write to you as soon as I know something.',note:'immediately when something happens'}
+],
+[
+ {word:'anche se',sentence:'Andremo al mare ___ farà freddo.',translation:'We will go to the seaside even if it is cold.',note:'a contrast that does not change the result'},
+ {word:'perché',sentence:'Studio italiano ___ voglio vivere a Roma.',translation:'I study Italian because I want to live in Rome.',note:'a reason'},
+ {word:'perciò',sentence:'Ho perso l’autobus; ___, sono arrivato tardi.',translation:'I missed the bus; therefore, I arrived late.',note:'a consequence'},
+ {word:'invece',sentence:'Io preferisco il tè; Marco, ___, beve sempre il caffè.',translation:'I prefer tea; Marco, on the other hand, always drinks coffee.',note:'an opposing choice'},
+ {word:'poi',sentence:'Prima visitiamo il museo e ___ pranziamo.',translation:'First we visit the museum and then we have lunch.',note:'the next step in a sequence'}
+],
+[
+ {word:'spesso',sentence:'Vado ___ in biblioteca dopo il lavoro.',translation:'I often go to the library after work.',note:'something that happens frequently'},
+ {word:'raramente',sentence:'Giulia mangia ___ fuori perché ama cucinare.',translation:'Giulia rarely eats out because she loves cooking.',note:'something that almost never happens'},
+ {word:'nel frattempo',sentence:'La pasta cuoce; ___, preparo il sugo.',translation:'The pasta is cooking; meanwhile, I prepare the sauce.',note:'something happening during the same period'},
+ {word:'infine',sentence:'Abbiamo visitato Firenze e, ___, siamo tornati a casa.',translation:'We visited Florence and, finally, we returned home.',note:'the last event in a sequence'},
+ {word:'nonostante',sentence:'___ la pioggia, abbiamo fatto una passeggiata.',translation:'Despite the rain, we took a walk.',note:'a contrast followed by a noun'}
+]
+];
+let roundIndex=0,totalCorrect=0,placements={},selected=null,checked=false;
+const wordBank=document.getElementById('wordBank'),sentenceList=document.getElementById('sentenceList'),feedback=document.getElementById('roundFeedback');
+const shuffle=items=>{const copy=[...items];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy};
+let wordOrder=[];
+function renderRound(){checked=false;placements={};selected=null;wordOrder=shuffle(rounds[roundIndex].map((_,i)=>i));document.getElementById('roundLabel').textContent=`Round ${roundIndex+1} of ${rounds.length}`;document.getElementById('scoreLabel').textContent=`${totalCorrect} correct`;document.getElementById('checkRound').hidden=false;document.getElementById('resetRound').hidden=false;document.getElementById('nextRound').hidden=true;feedback.textContent='';renderBoard()}
+function card(index){const item=rounds[roundIndex][index];return `<button type="button" class="word-card${selected===index?' selected':''}" draggable="${!checked}" data-word="${index}" aria-pressed="${selected===index}">${item.word}</button>`}
+function renderBoard(){const used=new Set(Object.values(placements));wordBank.innerHTML=wordOrder.filter(i=>!used.has(i)).map(card).join('')||'<div class="empty-note">All words placed</div>';sentenceList.innerHTML=rounds[roundIndex].map((item,slot)=>{const placed=placements[slot];const result=checked?(placed===slot?' correct':' wrong'):'';const correction=checked&&placed!==slot?`<span class="correction">Correct: ${item.word} — ${item.note}</span>`:'';return `<article class="sentence-row"><p class="sentence-text">${item.sentence}</p><div class="drop-slot${result}" data-slot="${slot}">${placed===undefined?'Drop or tap here':card(placed)}</div><p class="translation">${item.translation}</p>${correction}</article>`}).join('');bindInteractions()}
+function place(word,slot){if(checked)return;for(const key of Object.keys(placements))if(placements[key]===word)delete placements[key];placements[slot]=word;selected=null;renderBoard()}
+function bindInteractions(){document.querySelectorAll('.word-card').forEach(el=>{el.addEventListener('click',event=>{event.stopPropagation();const word=Number(el.dataset.word);const parent=el.closest('.drop-slot');if(parent){delete placements[parent.dataset.slot];selected=word}else selected=selected===word?null:word;renderBoard()});el.addEventListener('dragstart',event=>event.dataTransfer.setData('text/plain',el.dataset.word))});document.querySelectorAll('.drop-slot').forEach(slot=>{slot.addEventListener('click',()=>{if(selected!==null)place(selected,Number(slot.dataset.slot))});slot.addEventListener('dragover',event=>{event.preventDefault();slot.classList.add('over')});slot.addEventListener('dragleave',()=>slot.classList.remove('over'));slot.addEventListener('drop',event=>{event.preventDefault();slot.classList.remove('over');place(Number(event.dataTransfer.getData('text/plain')),Number(slot.dataset.slot))})})}
+document.getElementById('checkRound').addEventListener('click',()=>{if(Object.keys(placements).length<rounds[roundIndex].length){feedback.className='round-feedback bad';feedback.textContent='Place all five words before checking.';return}checked=true;const correct=rounds[roundIndex].reduce((sum,_,i)=>sum+(placements[i]===i),0);totalCorrect+=correct;feedback.className=`round-feedback ${correct===5?'good':'bad'}`;feedback.textContent=correct===5?'Perfetto—five correct matches!':`${correct} of 5 correct. Review the highlighted corrections.`;document.getElementById('scoreLabel').textContent=`${totalCorrect} correct`;document.getElementById('checkRound').hidden=true;document.getElementById('resetRound').hidden=true;document.getElementById('nextRound').hidden=false;document.getElementById('nextRound').textContent=roundIndex===rounds.length-1?'See final score':'Next round';renderBoard()});
+document.getElementById('resetRound').addEventListener('click',()=>{placements={};selected=null;feedback.textContent='';renderBoard()});
+document.getElementById('nextRound').addEventListener('click',()=>{if(roundIndex<rounds.length-1){roundIndex++;renderRound()}else{document.querySelector('.match-card').innerHTML=`<div class="complete"><strong>${totalCorrect}/${rounds.length*5}</strong><h2>Matching complete</h2><p>${totalCorrect===20?'Ottimo! Every connecting word found its place.':'Try again to make the connections automatic.'}</p><div class="actions" style="justify-content:center"><button class="primary" id="again">Play again</button><a class="back" style="padding:10px" href="index.html">All quizzes</a></div></div>`;document.getElementById('again').addEventListener('click',()=>location.reload())}});
+renderRound();
+</script>
+</body>
+</html>
